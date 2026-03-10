@@ -1,0 +1,50 @@
+{
+  "required": true,
+  "package": "com.rosemods.windswept.core.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "windswept.refmap.json",
+  "mixins": [
+    "BeehiveBlockMixin",
+    "BlockMixin",
+    "BoatMixin",
+    "DrownedMixin",
+    "EnderManMixin",
+    "FlowerBlockMixin",
+    "FoxEatBerriesGoalMixin",
+    "FoxMixin",
+    "GoatMixin",
+    "IceBlockMixin",
+    "LiquidBlockMixin",
+    "LivingEntityMixin",
+    "LlamaMixin",
+    "MossBlockMixin",
+    "PanicGoalMixin",
+    "PathfinderMobMixin",
+    "PlayerMixin",
+    "PowderSnowBlockMixin",
+    "SheepMixin",
+    "SimpleWaterloggedBlockMixin",
+    "SkeletonMixin",
+    "SnowballMixin",
+    "SnowGolemMixin",
+    "SnowLayerBlockMixin",
+    "SnowyDirtBlockMixin",
+    "SolidBucketItemMixin",
+    "StrayMixin",
+    "TemptGoalMixin",
+    "TreeFeatureMixin",
+    "TrunkPlacerMixin",
+    "ZombieMixin"
+  ],
+  "client": [
+    "client.GoatRendererMixin",
+    "client.HumanoidArmorLayerMixin",
+    "client.ItemInHandRendererMixin",
+    "client.LivingEntityRendererMixin",
+    "client.RabbitRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "values": [
+    "windswept:snowy_chestnut_forest",
+    "minecraft:snowy_taiga",
+    "minecraft:cherry_grove",
+    {
+      "id": "atmospheric:kousa_jungle",
+      "required": false
+    },
+    {
+      "id": "environmental:blossom_woods",
+      "required": false
+    }
+  ]
+}

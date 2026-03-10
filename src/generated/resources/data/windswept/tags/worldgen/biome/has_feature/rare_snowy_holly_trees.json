@@ -1,0 +1,10 @@
+{
+  "values": [
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks",
+    {
+      "id": "atmospheric:kousa_jungle",
+      "required": false
+    }
+  ]
+}

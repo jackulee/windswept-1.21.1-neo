@@ -1,0 +1,97 @@
+package com.rosemods.windswept.core.data.server.tags;
+
+import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.other.tags.WindsweptBlockTags;
+import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
+import java.util.concurrent.CompletableFuture;
+
+import static com.rosemods.windswept.core.registry.WindsweptBlocks.*;
+
+public class WindsweptBlockTagProvider extends BlockTagsProvider {
+
+    public WindsweptBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
+        super(output, provider, Windswept.MOD_ID, helper);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider provider) {
+        //windswept
+        this.tag(WindsweptBlockTags.HOLLY_LOGS).add(HOLLY_LOG.get(), HOLLY_WOOD.get(), STRIPPED_HOLLY_LOG.get(), STRIPPED_HOLLY_WOOD.get());
+        this.tag(WindsweptBlockTags.CHESTNUT_LOGS).add(CHESTNUT_LOG.get(), CHESTNUT_WOOD.get(), STRIPPED_CHESTNUT_LOG.get(), STRIPPED_CHESTNUT_WOOD.get());
+        this.tag(WindsweptBlockTags.PINE_LOGS).add(PINE_LOG.get(), PINE_WOOD.get(), WEATHERED_PINE_LOG.get(), WEATHERED_PINE_WOOD.get(), STRIPPED_PINE_LOG.get(), STRIPPED_PINE_WOOD.get());
+        this.tag(WindsweptBlockTags.LUNALITE).add(LUNALITE.get(), LUNALITE_SLAB.get(), LUNALITE_STAIRS.get(), LUNALITE_WALL.get());
+        this.tag(WindsweptBlockTags.SNOW_BOOTS_BLOCKS).addTag(BlockTags.SNOW).add(SNOWY_SPROUTS.get(), SNOWDROP.get());
+        this.tag(WindsweptBlockTags.FROSTBITER_FOOD).add(Blocks.SHORT_GRASS, LAVENDER.get(), SNOWY_SPROUTS.get(), DRY_MOSSY_SPROUTS.get(), MOSSY_SPROUTS.get(), GELISOL_GRASS.get()).addTag(BlockTags.FLOWERS);
+        this.tag(WindsweptBlockTags.PINECONE_NOTE_BLOCKS).add(CARVED_PINECONE_BLOCK.get(), PINECONE_BLOCK.get(), PINECONE_SHINGLES.get(), WHITE_PINECONE_SHINGLES.get(), LIGHT_GRAY_PINECONE_SHINGLES.get(), GRAY_PINECONE_SHINGLES.get(), BLACK_PINECONE_SHINGLES.get(), BROWN_PINECONE_SHINGLES.get(), RED_PINECONE_SHINGLES.get(), ORANGE_PINECONE_SHINGLES.get(), YELLOW_PINECONE_SHINGLES.get(), LIME_PINECONE_SHINGLES.get(), GREEN_PINECONE_SHINGLES.get(), CYAN_PINECONE_SHINGLES.get(), LIGHT_BLUE_PINECONE_SHINGLES.get(), BLUE_PINECONE_SHINGLES.get(), PURPLE_PINECONE_SHINGLES.get(), MAGENTA_PINECONE_SHINGLES.get(), PINK_PINECONE_SHINGLES.get());
+
+        //environmental
+        this.tag(WindsweptBlockTags.PINECONE_GOLEM_BASE_BLOCKS).add(PINECONE_BLOCK.get());
+
+        //snowy spirit
+        this.tag(WindsweptBlockTags.GINGERBREADS).add(GINGERBREAD_BLOCK.get(), GLAZED_GINGERBREAD_BLOCK.get());
+
+        //woodworks
+        this.tag(BlueprintBlockTags.LEAF_PILES).add(HOLLY_LEAF_PILE.get(), CHESTNUT_LEAF_PILE.get(), PINE_LEAF_PILE.get(), FLOWERING_ACACIA_LEAF_PILE.get());
+        this.tag(BlueprintBlockTags.WOODEN_BOARDS).add(HOLLY_BOARDS.get(), CHESTNUT_BOARDS.get(), PINE_BOARDS.get());
+        this.tag(BlueprintBlockTags.WOODEN_BEEHIVES).add(HOLLY_BEEHIVE.get(), CHESTNUT_BEEHIVE.get(), PINE_BEEHIVE.get());
+        this.tag(BlueprintBlockTags.WOODEN_TRAPPED_CHESTS).add(TRAPPED_HOLLY_CHEST.get(), TRAPPED_CHESTNUT_CHEST.get(), TRAPPED_PINE_CHEST.get());
+        this.tag(BlueprintBlockTags.WOODEN_LADDERS).add(HOLLY_LADDER.get(), CHESTNUT_LADDER.get(), PINE_LADDER.get());
+        this.tag(BlueprintBlockTags.WOODEN_BOOKSHELVES).add(HOLLY_BOOKSHELF.get(), CHESTNUT_BOOKSHELF.get(), PINE_BOOKSHELF.get());
+        this.tag(BlueprintBlockTags.WOODEN_CHISELED_BOOKSHELVES).add(CHISELED_HOLLY_BOOKSHELF.get(), CHISELED_CHESTNUT_BOOKSHELF.get(), CHISELED_PINE_BOOKSHELF.get());
+
+        //create
+        this.tag(WindsweptBlockTags.CHEST_MOUNTED_STORAGE).add(HOLLY_CHEST.get(), TRAPPED_HOLLY_CHEST.get(), CHESTNUT_CHEST.get(), TRAPPED_CHESTNUT_CHEST.get(), PINE_CHEST.get(), TRAPPED_PINE_CHEST.get());
+
+        //quark
+        this.tag(WindsweptBlockTags.QUARK_LADDERS).add(HOLLY_LADDER.get(), CHESTNUT_LADDER.get(), PINE_LADDER.get());
+
+        //neoforge
+        this.tag(Tags.Blocks.BOOKSHELVES).add(HOLLY_BOOKSHELF.get(), CHESTNUT_BOOKSHELF.get(), PINE_BOOKSHELF.get());
+        this.tag(Tags.Blocks.CHESTS_WOODEN).add(HOLLY_CHEST.get(), TRAPPED_HOLLY_CHEST.get(), CHESTNUT_CHEST.get(), TRAPPED_CHESTNUT_CHEST.get(), PINE_CHEST.get(), TRAPPED_PINE_CHEST.get());
+        this.tag(Tags.Blocks.CHESTS_TRAPPED).add(TRAPPED_HOLLY_CHEST.get(), TRAPPED_CHESTNUT_CHEST.get(), TRAPPED_PINE_CHEST.get());
+        this.tag(Tags.Blocks.STONES).add(SHALE.get());
+        this.tag(BlueprintBlockTags.LADDERS).add(HOLLY_LADDER.get(), CHESTNUT_LADDER.get(), PINE_LADDER.get());
+
+        //vanilla
+        this.tag(BlockTags.ENCHANTMENT_POWER_PROVIDER).add(HOLLY_BOOKSHELF.get(), CHESTNUT_BOOKSHELF.get(), PINE_BOOKSHELF.get());
+        this.tag(BlockTags.CROPS).add(GINGER.get());
+        this.tag(BlockTags.STONE_ORE_REPLACEABLES).add(SHALE.get());
+        this.tag(BlockTags.BASE_STONE_OVERWORLD).add(SHALE.get());
+        this.tag(BlockTags.VALID_SPAWN).add(GELISOL.get(), DRY_MOSS_BLOCK.get());
+        this.tag(BlockTags.ANIMALS_SPAWNABLE_ON).add(GELISOL.get(), DRY_MOSS_BLOCK.get());
+        this.tag(BlockTags.FOXES_SPAWNABLE_ON).add(GELISOL.get(), DRY_MOSS_BLOCK.get());
+        this.tag(BlockTags.GOATS_SPAWNABLE_ON).add(GELISOL.get(), DRY_MOSS_BLOCK.get());
+        this.tag(BlockTags.WOLVES_SPAWNABLE_ON).add(GELISOL.get(), DRY_MOSS_BLOCK.get());
+        this.tag(BlockTags.DIRT).add(DRY_MOSS_BLOCK.get(), GELISOL.get(), GELISOL_PATH.get(), GINGER_SOIL.get());
+        this.tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).add(HOLLY_LEAVES.get());
+        this.tag(BlockTags.WALLS).add(BLUE_ICE_BRICK_WALL.get(), SNOW_BRICK_WALL.get(), PACKED_ICE_BRICK_WALL.get(), DRY_MOSSY_COBBLESTONE_WALL.get(), DRY_MOSSY_STONE_BRICK_WALL.get(), SHALE_WALL.get(), POLISHED_SHALE_WALL.get(), POLISHED_SHALE_BRICK_WALL.get(), LUNALITE_WALL.get(), CUT_LUNALITE_WALL.get(), CUT_LUNALITE_BRICK_WALL.get(), GINGERBREAD_BRICK_WALL.get(), GLAZED_GINGERBREAD_BRICK_WALL.get(), DRY_MOSSY_COBBLESTONE_BRICK_WALL.get(), DRY_MOSSY_COBBLESTONE_TILE_WALL.get());
+        this.tag(BlockTags.BEEHIVES).add(HOLLY_BEEHIVE.get(), CHESTNUT_BEEHIVE.get(), PINE_BEEHIVE.get());
+        this.tag(BlockTags.WOODEN_BUTTONS).add(HOLLY_BUTTON.get(), CHESTNUT_BUTTON.get(), PINE_BUTTON.get());
+        this.tag(BlockTags.WOODEN_PRESSURE_PLATES).add(HOLLY_PRESSURE_PLATE.get(), CHESTNUT_PRESSURE_PLATE.get(), PINE_PRESSURE_PLATE.get());
+        this.tag(BlockTags.PLANKS).add(HOLLY_PLANKS.get(), CHESTNUT_PLANKS.get(), PINE_PLANKS.get());
+        this.tag(BlockTags.WOODEN_DOORS).add(HOLLY_DOOR.get(), CHESTNUT_DOOR.get(), PINE_DOOR.get());
+        this.tag(BlockTags.DOORS).add(ICICLE_DOOR.get(), GINGERBREAD_DOOR.get());
+        this.tag(BlockTags.WOODEN_TRAPDOORS).add(HOLLY_TRAPDOOR.get(), CHESTNUT_TRAPDOOR.get(), PINE_TRAPDOOR.get());
+        this.tag(BlockTags.TRAPDOORS).add(ICICLE_TRAPDOOR.get(), GINGERBREAD_TRAPDOOR.get());
+        this.tag(BlockTags.WOODEN_STAIRS).add(HOLLY_STAIRS.get(), CHESTNUT_STAIRS.get(), PINE_STAIRS.get());
+        this.tag(BlockTags.WOODEN_SLABS).add(HOLLY_SLAB.get(), CHESTNUT_SLAB.get(), PINE_SLAB.get());
+        this.tag(BlockTags.WALL_SIGNS).add(HOLLY_SIGNS.getSecond().get(), CHESTNUT_SIGNS.getSecond().get(), PINE_SIGNS.getSecond().get());
+        this.tag(BlockTags.STANDING_SIGNS).add(HOLLY_SIGNS.getFirst().get(), CHESTNUT_SIGNS.getFirst().get(), PINE_SIGNS.getFirst().get());
+        this.tag(BlockTags.CEILING_HANGING_SIGNS).add(HOLLY_HANGING_SIGNS.getFirst().get(), CHESTNUT_HANGING_SIGNS.getFirst().get(), PINE_HANGING_SIGNS.getFirst().get());
+        this.tag(BlockTags.WALL_HANGING_SIGNS).add(HOLLY_HANGING_SIGNS.getSecond().get(), CHESTNUT_HANGING_SIGNS.getSecond().get(), PINE_HANGING_SIGNS.getSecond().get());
+        this.tag(BlockTags.WOODEN_FENCES).add(HOLLY_FENCE.get(), CHESTNUT_FENCE.get(), PINE_FENCE.get());
+        this.tag(BlockTags.LOGS_THAT_BURN).addTag(WindsweptBlockTags.HOLLY_LOGS).addTag(WindsweptBlockTags.CHESTNUT_LOGS).addTag(WindsweptBlockTags.PINE_LOGS);
+        this.tag(BlockTags.LEAVES).add(HOLLY_LEAVES.get(), CHESTNUT_LEAVES.get(), PINE_LEAVES.get(), FLOWERING_ACACIA_LEAVES.get());
+        this.tag(BlockTags.CLIMBABLE).add(HOLLY_LADDER.get(), CHESTNUT_LADDER.get(), PINE_LADDER.get());
+        this.tag(BlockTags.FENCE_GATES).add(HOLLY_FENCE_GATE.get(), CHESTNUT_FENCE_GATE.get(), PINE_FENCE_GATE.get());
+        this.tag(BlockTags.SAPLINGS).add(HOLLY_SAPLING.get(), CHESTNUT_SAPLING.get(), PINE_SAPLING.get(), FLOWERING_ACACIA_SAPLING.get());
+        this.tag(BlockTags.SLABS).add(BLUE_ICE_BRICK_SLAB.get(), SNOW_BRICK_SLAB.get(), PACKED_ICE_BRICK_SLAB.get(), PACKED_ICE_SLAB.get(), SNOW_SLAB.get(), DRY_MOSSY_COBBLESTONE_SLAB.get(), DRY_MOSSY_STONE_BRICK_SLAB.get(), SHALE_SLAB.get(), POLISHED_SHALE_SLAB.get(), POLISHED_SHALE_BRICK_SLAB.get(), PINECONE_SHINGLE_SLAB.get(), LUNALITE_SLAB.get(), CUT_LUNALITE_SLAB.get(), CUT_LUNALITE_BRICK_SLAB.get(), SMOOTH_LUNALITE_SLAB.get(), GINGERBREAD_BRICK_SLAB.get(), GLAZED_GINGERBREAD_BRICK_SLAB.get(), DRY_MOSSY_COBBLESTONE_BRICK_SLAB.get(), DRY_MOSSY_COBBLESTONE_TILE_SLAB.get(), LAVENDER_THATCH_SLAB.get(), WHITE_PINECONE_SHINGLE_SLAB.get(), LIGHT_GRAY_PINECONE_SHINGLE_SLAB.get(), GRAY_PINECONE_SHINGLE_SLAB.get(), BLACK_PINECONE_SHINGLE_SLAB.get(), BROWN_PINECONE_SHINGLE_SLAB.get(), RED_PINECONE_SHINGLE_SLAB.get(), ORANGE_PINECONE_SHINGLE_SLAB.get(), YELLOW_PINECONE_SHINGLE_SLAB.get(), LIME_PINECONE_SHINGLE_SLAB.get(), GREEN_PINECONE_SHINGLE_SLAB.get(), CYAN_PINECONE_SHINGLE_SLAB.get(), LIGHT_BLUE_PINECONE_SHINGLE_SLAB.get(), BLUE_PINECONE_SHINGLE_SLAB.get(), PURPLE_PINECONE_SHINGLE_SLAB.get(), MAGENTA_PINECONE_SHINGLE_SLAB.get(), PINK_PINECONE_SHINGLE_SLAB.get());
+        this.tag(BlockTags.STAIRS).add(BLUE_ICE_BRICK_STAIRS.get(), SNOW_BRICK_STAIRS.get(), PACKED_ICE_BRICK_STAIRS.get(), PACKED_ICE_STAIRS.get(), BLUE_ICE_STAIRS.get(), SNOW_STAIRS.get(), DRY_MOSSY_COBBLESTONE_STAIRS.get(), DRY_MOSSY_STONE_BRICK_STAIRS.get(), SHALE_STAIRS.get(), POLISHED_SHALE_STAIRS.get(), POLISHED_SHALE_BRICK_STAIRS.get(), PINECONE_SHINGLE_STAIRS.get(), LUNALITE_STAIRS.get(), CUT_LUNALITE_STAIRS.get(), CUT_LUNALITE_BRICK_STAIRS.get(), SMOOTH_LUNALITE_STAIRS.get(), GINGERBREAD_BRICK_STAIRS.get(), GLAZED_GINGERBREAD_BRICK_STAIRS.get(), DRY_MOSSY_COBBLES

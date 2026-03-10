@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "state=bottom": {
+      "model": "windswept:block/icicles_bottom"
+    },
+    "state=floor": {
+      "model": "windswept:block/icicles_floor"
+    },
+    "state=normal": {
+      "model": "windswept:block/icicles"
+    },
+    "state=top": {
+      "model": "windswept:block/icicles_top"
+    }
+  }
+}

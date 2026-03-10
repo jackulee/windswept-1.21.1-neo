@@ -1,0 +1,86 @@
+{
+  "block.pinecone.note": {
+    "sounds": [
+      {
+        "name": "windswept:pinecone_note",
+        "stream": true
+      }
+    ]
+  },
+  "entity.chilled.ambient": {
+    "sounds": [
+      {
+        "name": "windswept:entity/chilled/ambient/idle1",
+        "volume": 1.3
+      },
+      {
+        "name": "windswept:entity/chilled/ambient/idle2",
+        "volume": 1.3
+      },
+      {
+        "name": "windswept:entity/chilled/ambient/idle3",
+        "volume": 1.3
+      }
+    ]
+  },
+  "entity.chilled.death": {
+    "sounds": [
+      {
+        "name": "windswept:entity/chilled/death/death1",
+        "volume": 1.6
+      },
+      {
+        "name": "windswept:entity/chilled/death/death2",
+        "volume": 1.6
+      },
+      {
+        "name": "windswept:entity/chilled/death/death3",
+        "volume": 1.6
+      },
+      {
+        "name": "windswept:entity/chilled/death/death4",
+        "volume": 1.6
+      }
+    ]
+  },
+  "entity.chilled.hurt": {
+    "sounds": [
+      {
+        "name": "windswept:entity/chilled/hurt/hurt1",
+        "volume": 1.5
+      },
+      {
+        "name": "windswept:entity/chilled/hurt/hurt2",
+        "volume": 1.5
+      },
+      {
+        "name": "windswept:entity/chilled/hurt/hurt3",
+        "volume": 1.5
+      }
+    ]
+  },
+  "music_disc.bumblebee": {
+    "sounds": [
+      {
+        "name": "windswept:records/bumblebee",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.rain": {
+    "sounds": [
+      {
+        "name": "windswept:records/rain",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.snow": {
+    "sounds": [
+      {
+        "name": "windswept:records/snow",
+        "stream": true
+      }
+    ]
+  }
+}

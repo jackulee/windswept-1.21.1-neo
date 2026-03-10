@@ -1,0 +1,52 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_4"
+      },
+      "when": {
+        "state": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_3"
+      },
+      "when": {
+        "state": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_2"
+      },
+      "when": {
+        "state": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_1"
+      },
+      "when": {
+        "state": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_4"
+      },
+      "when": {
+        "state": "fire"
+      }
+    },
+    {
+      "apply": {
+        "model": "windswept:block/christmas_pudding_fire"
+      },
+      "when": {
+        "state": "fire"
+      }
+    }
+  ]
+}

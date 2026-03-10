@@ -1,0 +1,28 @@
+package com.rosemods.windswept.common.block;
+
+import com.mojang.serialization.MapCodec;
+import com.rosemods.windswept.common.block_entity.SuspiciousSnowBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BrushableBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class SuspiciousSnowBlock extends BrushableBlock {
+    public static final MapCodec<SuspiciousSnowBlock> CODEC = simpleCodec(SuspiciousSnowBlock::new);
+
+    public SuspiciousSnowBlock(Properties properties) {
+        super(Blocks.SNOW_BLOCK, SoundEvents.BRUSH_SAND, SoundEvents.BRUSH_SAND_COMPLETED, properties);
+    }
+
+    @Override
+    public MapCodec<? extends SuspiciousSnowBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new SuspiciousSnowBlockEntity(pos, state);
+    }
+}
