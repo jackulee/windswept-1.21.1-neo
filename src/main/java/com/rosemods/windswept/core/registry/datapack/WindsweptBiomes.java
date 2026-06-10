@@ -44,8 +44,10 @@ public final class WindsweptBiomes {
         return ResourceKey.create(Registries.BIOME, Windswept.location(name));
     }
 
+    // Chestnut //
     private static Biome chestnutForest(boolean snowy, HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder(features, carvers);
+
         OverworldBiomes.globalOverworldGeneration(generation);
         BiomeDefaultFeatures.addPlainGrass(generation);
         BiomeDefaultFeatures.addDefaultOres(generation);
@@ -55,6 +57,7 @@ public final class WindsweptBiomes {
         BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
         BiomeDefaultFeatures.addCommonBerryBushes(generation);
         BiomeDefaultFeatures.addMossyStoneBlock(generation);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.TALL_FERNS);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.FERNS);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.CHESTNUT_TREES);
@@ -65,16 +68,20 @@ public final class WindsweptBiomes {
 
     private static MobSpawnSettings.Builder baseChestnutSpawns() {
         MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
+
         BiomeDefaultFeatures.commonSpawns(spawns);
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 12, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.PIG, 10, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 8, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.FOX, 12, 4, 4));
+
         return spawns;
     }
 
+    // Pine //
     private static Biome pineBarrens(boolean snowy, HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder(features, carvers);
+
         OverworldBiomes.globalOverworldGeneration(generation);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.PINE_FALLEN_LOG);
         BiomeDefaultFeatures.addPlainGrass(generation);
@@ -83,11 +90,15 @@ public final class WindsweptBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
         BiomeDefaultFeatures.addDefaultMushrooms(generation);
         BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.TALL_FERNS);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.FERNS);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LUPINE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.GINGER_PATCH);
-        if (!snowy) generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.DRY_MOSS_PATCH_SMALL);
+
+        if (!snowy)
+            generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.DRY_MOSS_PATCH_SMALL);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.DRY_MOSS_ROCK);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.HOLLY_BUSH);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.PINE_TREES);
@@ -98,16 +109,20 @@ public final class WindsweptBiomes {
 
     private static MobSpawnSettings.Builder basePineSpawns() {
         MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
+
         BiomeDefaultFeatures.commonSpawns(spawns);
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 15, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.PIG, 10, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 8, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.FOX, 12, 4, 4));
+
         return spawns;
     }
 
+    // Tundra //
     private static Biome tundra(HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder(features, carvers);
+
         OverworldBiomes.globalOverworldGeneration(generation);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.TUNDRA_FALLEN_LOG);
         BiomeDefaultFeatures.addDefaultOres(generation);
@@ -115,6 +130,7 @@ public final class WindsweptBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
         BiomeDefaultFeatures.addDefaultMushrooms(generation);
         BiomeDefaultFeatures.addCommonBerryBushes(generation);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.SNOWY_GELISOL);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LUPINE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.DRY_MOSS_PATCH_LARGE);
@@ -127,6 +143,7 @@ public final class WindsweptBiomes {
 
     private static MobSpawnSettings.Builder baseTundraSpawns() {
         MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
+
         BiomeDefaultFeatures.commonSpawns(spawns);
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 8, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 2, 4, 4));
@@ -134,20 +151,26 @@ public final class WindsweptBiomes {
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 10, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.FOX, 12, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 8, 1, 2));
+
         return spawns;
     }
 
+    // Lavender //
     private static Biome lavender(boolean hills, HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder(features, carvers);
+
         OverworldBiomes.globalOverworldGeneration(generation);
         BiomeDefaultFeatures.addDefaultOres(generation);
         BiomeDefaultFeatures.addDefaultSoftDisks(generation);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
         BiomeDefaultFeatures.addDefaultMushrooms(generation);
+
         if (hills) {
             generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LAVENDER_TALL_BIRCH_TREES);
             generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LAVENDER_CHESTNUT_TREES);
-        } else generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LAVENDER_FIELDS_TREES);
+        } else
+            generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LAVENDER_FIELDS_TREES);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LARGE_WHITE_ROSE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.LAVENDER);
 
@@ -156,12 +179,16 @@ public final class WindsweptBiomes {
 
     private static MobSpawnSettings.Builder baseLavenderSpawns() {
         MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
+
         BiomeDefaultFeatures.commonSpawns(spawns);
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 15, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 8, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.DONKEY, 8, 1, 2));
+
         return spawns;
     }
+
+    // Savanna //
 
     private static Biome savanna(HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder(features, carvers);
@@ -172,6 +199,7 @@ public final class WindsweptBiomes {
         BiomeDefaultFeatures.addShatteredSavannaGrass(generation);
         BiomeDefaultFeatures.addDefaultMushrooms(generation);
         BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
+
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.YELLOW_PETALS);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.FLOWERING_SAVANNA_TREES);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, WindsweptPlacedFeatures.COMMON_LIONS_TAIL);
@@ -187,12 +215,14 @@ public final class WindsweptBiomes {
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.DONKEY, 1, 1, 1));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.LLAMA, 8, 4, 4));
         spawns.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 12, 4, 4));
+
         return spawns;
     }
 
-    private static Biome.Builder biome(float temp, float downfall, int waterColor, int waterFogColor, int fogColor, boolean precipitation, BiomeGenerationSettings.Builder generation, MobSpawnSettings.Builder spawns) {
-        return new Biome.Builder()
-                .precipitation(precipitation)
+    // Util //
+    private static Biome.BiomeBuilder biome(float temp, float downfall, int waterColor, int waterFogColor, int fogColor, boolean precipitation, BiomeGenerationSettings.Builder generation, MobSpawnSettings.Builder spawns) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(precipitation)
                 .temperature(temp).downfall(downfall)
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(waterColor)
@@ -202,10 +232,12 @@ public final class WindsweptBiomes {
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
                         .backgroundMusic(OverworldBiomes.NORMAL_MUSIC).build())
                 .mobSpawnSettings(spawns.build()).generationSettings(generation.build());
+
     }
 
     private static int calculateSkyColor(float temperature) {
         float clampedTemp = Mth.clamp(temperature / 3f, -1f, 1f);
         return Mth.hsvToRgb(.62f - clampedTemp * .05f, .5f + clampedTemp * .1f, 1f);
     }
+
 }

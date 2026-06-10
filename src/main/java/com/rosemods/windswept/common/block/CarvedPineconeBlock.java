@@ -12,11 +12,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -54,8 +55,8 @@ public class CarvedPineconeBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
-        return this.triggerEvent(state, level, pos, 0, 0) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        return stack.isEmpty() && this.triggerEvent(state, level, pos, 0, 0) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -63,20 +64,13 @@ public class CarvedPineconeBlock extends HorizontalDirectionalBlock implements E
         if (!level.getBlockState(pos.relative(state.getValue(FACING))).isSolid()) {
             int below = 0;
             int above = 0;
-
             for (; level.getBlockState(pos.below(below + 1)).is(WindsweptBlockTags.PINECONE_NOTE_BLOCKS); below++) ;
             for (; level.getBlockState(pos.above(above + 1)).is(WindsweptBlockTags.PINECONE_NOTE_BLOCKS); above++) ;
-
             int pitch = KEY[(KEY.length - 1) - ((below + above) % KEY.length)];
-
             level.playSound(null, pos, WindsweptSounds.PINECONE_NOTE.get(), SoundSource.RECORDS, .35f, (float) Math.pow(2d, (pitch - 10d) / 12d));
-            if (level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ParticleTypes.NOTE, (double) pos.getX() + .5d, (double) pos.getY() + (double) above + 1.2d, (double) pos.getZ() + .5d, 1, 0, 0, 0, (double) pitch / KEY.length);
-            }
-
+            level.addParticle(ParticleTypes.NOTE, (double) pos.getX() + .5d, (double) pos.getY() + (double) above + 1.2d, (double) pos.getZ() + .5d, (double) pitch / KEY.length, 0d, 0d);
             return true;
         }
-
         return false;
     }
 
@@ -103,6 +97,7 @@ public class CarvedPineconeBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return !level.isClientSide ? BaseEntityBlock.createTickerHelper(type, WindsweptBlockEntities.CARVED_PINECONE.get(), FearfulBlockEntity::tick) : null;
+        if (level.isClientSide) return null;
+        return type == WindsweptBlockEntities.CARVED_PINECONE.get() ? (level1, pos, state1, blockEntity) -> FearfulBlockEntity.tick(level1, pos, state1, (FearfulBlockEntity) blockEntity) : null;
     }
 }

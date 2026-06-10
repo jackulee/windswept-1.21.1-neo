@@ -46,4 +46,5 @@ public class RoseFlowerBlock extends FlowerBlock implements BonemealableBlock {
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         grow(level, pos, this.tall.get());
     }
+
 }

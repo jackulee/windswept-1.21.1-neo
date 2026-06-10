@@ -25,6 +25,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class IciclesBlock extends Block implements SimpleWaterloggedBlock {
     public static final EnumProperty<IcicleStates> STATE = EnumProperty.create("state", IcicleStates.class);
@@ -43,16 +45,19 @@ public class IciclesBlock extends Block implements SimpleWaterloggedBlock {
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction direction = state.getValue(STATE) == IcicleStates.FLOOR ? Direction.UP : Direction.DOWN;
         BlockPos blockpos = pos.relative(direction.getOpposite());
+
         if (direction == Direction.DOWN) {
             BlockState above = level.getBlockState(pos.above());
+
             if (above.is(this) && above.getValue(STATE) == IcicleStates.NORMAL)
                 return true;
         }
+
         return Block.canSupportCenter(level, blockpos, direction) || level.getBlockState(blockpos).is(BlockTags.LEAVES);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         BlockState blockState = state;
         BlockState below = level.getBlockState(currentPos.below());
 
@@ -65,7 +70,7 @@ public class IciclesBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos blockpos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos blockpos, CollisionContext context) {
         return switch (state.getValue(STATE)) {
             default -> SHAPE;
             case TOP -> TOP;
@@ -80,14 +85,14 @@ public class IciclesBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected FluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float damage) {
         if (state.getValue(STATE) == IcicleStates.FLOOR)
-            entity.causeFallDamage(damage + 2f, 2f, level.damageSources().source(WindsweptDamageTypes.ICICLE));
+            entity.causeFallDamage(damage + 2f, 2f, entity.damageSources().source(WindsweptDamageTypes.ICICLE));
         else
             super.fallOn(level, state, pos, entity, damage);
     }
@@ -101,37 +106,68 @@ public class IciclesBlock extends Block implements SimpleWaterloggedBlock {
 
         if (face == Direction.DOWN) {
             BlockState blockstate = this.defaultBlockState().setValue(STATE, level.getBlockState(pos.above()).is(this) ? IcicleStates.BOTTOM : IcicleStates.NORMAL);
+
             if (blockstate.canSurvive(level, pos))
                 return blockstate.setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
+
         } else if (face == Direction.UP) {
             BlockState blockstate = this.defaultBlockState().setValue(STATE, IcicleStates.FLOOR);
+
             if (blockstate.canSurvive(level, pos))
                 return blockstate.setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
-        } else {
-            for (Direction direction : context.getNearestLookingDirections()) {
-                if (direction.getAxis() == Direction.Axis.Y) {
-                    IcicleStates state = (direction == Direction.UP) ? IcicleStates.FLOOR : (level.getBlockState(pos.above()).is(this) ? IcicleStates.BOTTOM : IcicleStates.NORMAL);
-                    BlockState blockstate = this.defaultBlockState().setValue(STATE, state);
-                    if (blockstate.canSurvive(level, pos))
-                        return blockstate.setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
+
+        } else for (Direction direction : context.getNearestLookingDirections())
+            if (direction.getAxis() == Direction.Axis.Y) {
+                IcicleStates state;
+
+                if (direction == Direction.UP)
+                    state = IcicleStates.FLOOR;
+                else {
+                    if (level.getBlockState(pos.above()).is(this))
+                        state = IcicleStates.BOTTOM;
+                    else
+                        state = IcicleStates.NORMAL;
                 }
+
+                BlockState blockstate = this.defaultBlockState().setValue(STATE, state);
+
+                if (blockstate.canSurvive(level, pos))
+                    return blockstate.setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
             }
-        }
 
         return null;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         if (rand.nextFloat() < .05f && !state.getValue(WATERLOGGED) && level.getBlockState(pos.below()).isAir())
-            level.addParticle(ParticleTypes.DRIPPING_DRIPSTONE_WATER, pos.getX() + .5d, pos.getY() + .15d, pos.getZ() + .65d, 0d, 0d, 0d);
+            level.addParticle(ParticleTypes.DRIPPING_DRIPSTONE_WATER, pos.getX() + .5d,
+                    pos.getY() + .15d, pos.getZ() + .65d, 0d, 0d, 0d);
+
     }
 
     public enum IcicleStates implements StringRepresentable {
-        NORMAL("normal"), TOP("top"), BOTTOM("bottom"), FLOOR("floor");
+        NORMAL("normal"),
+        TOP("top"),
+        BOTTOM("bottom"),
+        FLOOR("floor");
+
         private final String name;
-        IcicleStates(String name) { this.name = name; }
-        @Override public String getSerializedName() { return this.name; }
-        @Override public String toString() { return this.name; }
+
+        IcicleStates(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return this.name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
+
 }

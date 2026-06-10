@@ -2,11 +2,11 @@ package com.rosemods.windswept.common.item;
 
 import com.rosemods.windswept.common.entity.Frostbiter;
 import com.rosemods.windswept.core.Windswept;
-import com.rosemods.windswept.core.other.WindsweptTiers;
 import com.rosemods.windswept.core.other.tags.WindsweptBlockTags;
 import com.rosemods.windswept.core.registry.WindsweptAttributes;
 import com.rosemods.windswept.core.registry.WindsweptItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,33 +15,38 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
 
-public class SnowBootsItem extends ArmorItem implements DyeableLeatherItem {
+public class SnowBootsItem extends ArmorItem {
     private static final ResourceLocation SNOW_SPEED_ID = Windswept.location("snow_speed_modifier");
     private static final ResourceLocation SPEED_BOOST_ID = Windswept.location("snow_speed_boost");
 
-    public SnowBootsItem(Properties properties) {
-        super(WindsweptTiers.SNOW_BOOTS, Type.BOOTS, properties);
+    public SnowBootsItem(Holder<ArmorMaterial> material, ArmorItem.Type type, Properties properties) {
+        super(material, type, properties);
     }
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
-        return super.getDefaultAttributeModifiers(stack)
-                .withModifierAdded(WindsweptAttributes.SNOW_SPEED,
-                        new AttributeModifier(SNOW_SPEED_ID, 0.2D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
-                        EquipmentSlotGroup.FEET);
+        ItemAttributeModifiers modifiers = super.getDefaultAttributeModifiers(stack);
+        EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(this.type.getSlot());
+
+        // В 1.21.1 с использованием DeferredHolder (getHolder() или само поле, если это DeferredHolder)
+        modifiers = modifiers.withModifierAdded(WindsweptAttributes.SNOW_SPEED,
+                new AttributeModifier(SNOW_SPEED_ID, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slotGroup);
+
+        return modifiers;
     }
 
+    // Util //
+
     public static boolean canApplySnowSpeed(LivingEntity entity) {
-        BlockPos below = BlockPos.containing(entity.getX(), entity.getY() - 0.500001D, entity.getZ());
+        BlockPos below = entity.getOnPos(0.500001f);
+
         return isSnowingAt(entity) || ((entity.level().getBlockState(below).is(WindsweptBlockTags.SNOW_BOOTS_BLOCKS)
-                || entity.level().getBlockState(below.above()).is(WindsweptBlockTags.SNOW_BOOTS_BLOCKS)) && !entity.level().getBlockState(below).isAir());
+                || entity.level().getBlockState(below.above()).is(WindsweptBlockTags.SNOW_BOOTS_BLOCKS)) && !entity.level().getBlockState(entity.getOnPos()).isAir());
     }
 
     private static boolean isSnowingAt(LivingEntity entity) {
@@ -50,7 +55,7 @@ public class SnowBootsItem extends ArmorItem implements DyeableLeatherItem {
     }
 
     public static boolean canSpawnSnowParticle(LivingEntity entity) {
-        return entity.tickCount % 5 == 0 && entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D
+        return entity.tickCount % 5 == 0 && entity.getDeltaMovement().x != 0d && entity.getDeltaMovement().z != 0d
                 && !entity.isSpectator() && canApplySnowSpeed(entity)
                 && (entity.getItemBySlot(EquipmentSlot.FEET).is(WindsweptItems.SNOW_BOOTS.get()) || entity instanceof Frostbiter);
     }
@@ -58,26 +63,30 @@ public class SnowBootsItem extends ArmorItem implements DyeableLeatherItem {
     public static void spawnSnowParticle(LivingEntity entity) {
         Vec3 vec3 = entity.getDeltaMovement();
         entity.level().addParticle(ParticleTypes.SNOWFLAKE,
-                entity.getX() + (entity.level().random.nextDouble() - .5d) * (double) entity.getBbWidth(),
-                entity.getY() + .1d,
-                entity.getZ() + (entity.level().random.nextDouble() - .5d) * (double) entity.getBbWidth(), vec3.x * -.2d,
-                .1d, vec3.z * -.2d);
+                entity.getX() + (entity.level().random.nextDouble() - 0.5d) * (double) entity.getBbWidth(),
+                entity.getY() + 0.1d,
+                entity.getZ() + (entity.level().random.nextDouble() - 0.5d) * (double) entity.getBbWidth(),
+                vec3.x * -0.2d, 0.1d, vec3.z * -0.2d);
     }
 
     public static void removeSnowSpeed(LivingEntity entity) {
         AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speed != null) speed.removeModifier(SPEED_BOOST_ID);
+
+        if (speed != null && speed.getModifier(SPEED_BOOST_ID) != null)
+            speed.removeModifier(SPEED_BOOST_ID);
     }
 
     public static void tryAddSnowSpeed(LivingEntity entity) {
-        if (entity.getItemBySlot(EquipmentSlot.FEET).is(WindsweptItems.SNOW_BOOTS.get())) {
+        ItemStack boots = entity.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.is(WindsweptItems.SNOW_BOOTS.get())) {
             AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+
             if (speed != null) {
                 if (speed.getModifier(SPEED_BOOST_ID) == null)
-                    speed.addTransientModifier(new AttributeModifier(SPEED_BOOST_ID, 0.2D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    speed.addTransientModifier(new AttributeModifier(SPEED_BOOST_ID, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 
-                if (entity.level().random.nextFloat() < .02f)
-                    entity.getItemBySlot(EquipmentSlot.FEET).hurtAndBreak(1, entity, EquipmentSlot.FEET);
+                if (entity.level().random.nextFloat() < 0.02f)
+                    boots.hurtAndBreak(1, entity, EquipmentSlot.FEET);
             }
         }
     }

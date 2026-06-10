@@ -10,8 +10,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.Nullable;
 
 public class GelisolBlock extends SnowyDirtBlock implements BonemealableBlock {
@@ -20,13 +20,13 @@ public class GelisolBlock extends SnowyDirtBlock implements BonemealableBlock {
     }
 
     @Override
-    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction action, boolean simulate) {
-        return action == ToolActions.SHOVEL_FLATTEN ? WindsweptBlocks.GELISOL_PATH.get().defaultBlockState() : null;
+    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
+        return itemAbility == ItemAbilities.SHOVEL_FLATTEN ? WindsweptBlocks.GELISOL_PATH.get().defaultBlockState() : null;
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
-        BlockState above = levelReader.getBlockState(blockPos.above());
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+        BlockState above = level.getBlockState(pos.above());
         return above.canBeReplaced() && !above.is(WindsweptBlocks.GELISOL_GRASS.get());
     }
 
@@ -39,8 +39,10 @@ public class GelisolBlock extends SnowyDirtBlock implements BonemealableBlock {
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         for (int i = 0; i < 128; i++) {
             BlockPos blockPos = pos.above();
+
             for (int j = 0; j < i / 16; j++) {
                 blockPos = blockPos.offset(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2, random.nextInt(3) - 1);
+
                 if (!level.getBlockState(blockPos.below()).is(this) || level.getBlockState(blockPos).isCollisionShapeFullBlock(level, blockPos))
                     break;
             }
@@ -48,5 +50,7 @@ public class GelisolBlock extends SnowyDirtBlock implements BonemealableBlock {
             if (level.getBlockState(blockPos).isAir() && level.getBlockState(blockPos.below()).is(this))
                 level.setBlock(blockPos, WindsweptBlocks.GELISOL_GRASS.get().defaultBlockState(), 3);
         }
+
     }
+
 }

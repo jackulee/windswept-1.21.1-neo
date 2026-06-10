@@ -1,29 +1,49 @@
 package com.rosemods.windswept.core.data.client;
 
 import com.rosemods.windswept.core.Windswept;
-import net.minecraft.data.PackOutput;
+import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.common.data.SoundDefinition.Sound;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.function.Consumer;
 
 import static com.rosemods.windswept.core.registry.WindsweptSounds.*;
 
 public class WindsweptSoundProvider extends SoundDefinitionsProvider {
-    public WindsweptSoundProvider(PackOutput output, ExistingFileHelper helper) {
-        super(output, Windswept.MOD_ID, helper);
+    public WindsweptSoundProvider(GatherDataEvent event) {
+        super(event.getGenerator().getPackOutput(), Windswept.MOD_ID, event.getExistingFileHelper());
     }
 
     @Override
     public void registerSounds() {
-        this.add(MUSIC_DISC_RAIN.get(), definition().with(sound(Windswept.location("records/rain")).stream()));
-        this.add(MUSIC_DISC_SNOW.get(), definition().with(sound(Windswept.location("records/snow")).stream()));
-        this.add(MUSIC_DISC_BUMBLEBEE.get(), definition().with(sound(Windswept.location("records/bumblebee")).stream()));
-        this.add(PINECONE_NOTE.get(), definition().with(sound(Windswept.location("pinecone_note"))));
+        this.register(MUSIC_DISC_RAIN, "records/rain", Sound::stream);
+        this.register(MUSIC_DISC_SNOW, "records/snow", Sound::stream);
+        this.register(MUSIC_DISC_BUMBLEBEE, "records/bumblebee", Sound::stream);
+        this.register(PINECONE_NOTE, "pinecone_note", Sound::stream);
 
-        this.add(CHILLED_DEATH.get(), definition().with(
-                sound(Windswept.location("entity/chilled/death/death1")),
-                sound(Windswept.location("entity/chilled/death/death2")),
-                sound(Windswept.location("entity/chilled/death/death3")),
-                sound(Windswept.location("entity/chilled/death/death4"))
-        ).subtitle("subtitles.entity.chilled.death"));
+        this.register(CHILLED_DEATH, "entity/chilled/death/death", 4, 1.6f);
+        this.register(CHILLED_HURT, "entity/chilled/hurt/hurt", 3, 1.5f);
+        this.register(CHILLED_AMBIENT, "entity/chilled/ambient/idle", 3, 1.3f);
     }
+
+    private void register(DeferredHolder<SoundEvent, SoundEvent> soundEvent, String location, Consumer<Sound> consumer) {
+        Sound sound = sound(Windswept.location(location));
+        if (consumer != null)
+            consumer.accept(sound);
+
+        this.add(soundEvent.get(), definition().with(sound));
+    }
+
+    private void register(DeferredHolder<SoundEvent, SoundEvent> soundEvent, String name, int amount, float volume) {
+        Sound[] sounds = new Sound[amount];
+
+        for (int i = 1; i <= amount; i++)
+            sounds[i - 1] = sound(Windswept.location(name + i)).volume(volume);
+
+        this.add(soundEvent.get(), definition().with(sounds));
+    }
+
 }
+

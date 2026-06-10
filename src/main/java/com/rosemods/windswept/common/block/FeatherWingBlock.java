@@ -17,7 +17,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class FeatherWingBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<FeatherWingBlock> CODEC = simpleCodec(FeatherWingBlock::new);
-
     private static final VoxelShape SHAPE_NORTH = Block.box(4f, 3f, 3f, 12f, 13f, 16d);
     private static final VoxelShape SHAPE_SOUTH = Block.box(4f, 3f, 0f, 12f, 13f, 13d);
     private static final VoxelShape SHAPE_EAST = Block.box(0f, 3f, 4f, 13f, 13f, 12d);
@@ -34,7 +33,7 @@ public class FeatherWingBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
             case EAST -> SHAPE_EAST;
             case SOUTH -> SHAPE_SOUTH;
@@ -50,7 +49,7 @@ public class FeatherWingBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         return this.canSurvive(state, level, currentPos) ? state : Blocks.AIR.defaultBlockState();
     }
 
@@ -62,6 +61,7 @@ public class FeatherWingBlock extends HorizontalDirectionalBlock {
         for (Direction direction : context.getNearestLookingDirections())
             if (direction.getAxis().isHorizontal()) {
                 BlockState state = this.defaultBlockState().setValue(FACING, direction.getOpposite());
+
                 if (state.canSurvive(level, pos))
                     return state;
             }
@@ -73,4 +73,5 @@ public class FeatherWingBlock extends HorizontalDirectionalBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
+
 }

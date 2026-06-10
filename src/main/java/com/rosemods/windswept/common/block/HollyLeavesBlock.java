@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class HollyLeavesBlock extends LeavesBlock {
     private static final VoxelShape AABB = box(1f, 0f, 1f, 15f, 15f, 15f);
@@ -20,16 +22,17 @@ public class HollyLeavesBlock extends LeavesBlock {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         return AABB;
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         entityInside(1.2f, entity, level);
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public float getShadeBrightness(BlockState state, BlockGetter getter, BlockPos pos) {
         return .2f;
     }
@@ -40,7 +43,8 @@ public class HollyLeavesBlock extends LeavesBlock {
             double d1 = Math.abs(entity.getZ() - entity.zOld);
 
             if (d0 >= .003d || d1 >= .003d)
-                entity.hurt(level.damageSources().source(WindsweptDamageTypes.HOLLY_LEAVES), damage);
+                entity.hurt(entity.damageSources().source(WindsweptDamageTypes.HOLLY_LEAVES), damage);
         }
     }
+
 }

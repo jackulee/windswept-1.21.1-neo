@@ -6,7 +6,7 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.rosemods.windswept.core.registry.datapack.WindsweptBiomes.*;
-
 public final class WindsweptBiomeSlices {
     public static final ResourceKey<ModdedBiomeSlice> CHESTNUT_SLICE = createKey("chestnut");
     public static final ResourceKey<ModdedBiomeSlice> PINE_SLICE = createKey("pine");
@@ -34,7 +33,7 @@ public final class WindsweptBiomeSlices {
     public static final ResourceKey<Biome> TUNDRA_AREA = WindsweptBiomes.createKey("tundra_area");
     public static final ResourceKey<Biome> FLOWERING_SAVANNA_AREA = WindsweptBiomes.createKey("flowering_savanna_area");
 
-    public static void bootstrap(BootstapContext<ModdedBiomeSlice> context) {
+    public static void bootstrap(BootstrapContext<ModdedBiomeSlice> context) {
         List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> entries = new ArrayList<>();
         new WindsweptBiomeBuilder().addBiomesToSlice(entries::add);
 
@@ -338,5 +337,7 @@ public final class WindsweptBiomeSlices {
         private void addUndergroundBiome(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> p_187201_, Climate.Parameter p_187202_, Climate.Parameter p_187203_, Climate.Parameter p_187204_, Climate.Parameter p_187205_, Climate.Parameter p_187206_, float p_187207_, ResourceKey<Biome> p_187208_) {
             p_187201_.accept(Pair.of(Climate.parameters(p_187202_, p_187203_, p_187204_, p_187205_, Climate.Parameter.span(.2f, .9f), p_187206_, p_187207_), p_187208_));
         }
+
     }
+
 }

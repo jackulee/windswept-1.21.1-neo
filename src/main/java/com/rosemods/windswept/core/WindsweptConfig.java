@@ -1,12 +1,9 @@
 package com.rosemods.windswept.core;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
-import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class WindsweptConfig {
+public final class WindsweptConfig {
     public static final Common COMMON;
     public static final Client CLIENT;
     public static final ModConfigSpec COMMON_SPEC;
@@ -23,20 +20,20 @@ public class WindsweptConfig {
     }
 
     public static class Common {
-        public final IntValue woodenBucketDurability;
-        public final DoubleValue bumblebeeDiscChance;
-        public final BooleanValue iceBoatNerf;
-        public final BooleanValue birchBranches;
-        public final BooleanValue strays;
-        public final BooleanValue roots;
-        public final BooleanValue biggerFlowerHitbox;
-        public final BooleanValue rabbitLitters;
-        public final BooleanValue rainWashSnow;
-        public final BooleanValue freezingWater;
+        public final ModConfigSpec.ConfigValue<Integer> woodenBucketDurabilty;
+        public final ModConfigSpec.ConfigValue<Double> bumblebeeDiscChance;
+        public final ModConfigSpec.ConfigValue<Boolean> iceBoatNerf;
+        public final ModConfigSpec.ConfigValue<Boolean> birchBranches;
+        public final ModConfigSpec.ConfigValue<Boolean> strays;
+        public final ModConfigSpec.ConfigValue<Boolean> roots;
+        public final ModConfigSpec.ConfigValue<Boolean> biggerFlowerHitbox;
+        public final ModConfigSpec.ConfigValue<Boolean> rabbitLitters;
+        public final ModConfigSpec.ConfigValue<Boolean> rainWashSnow;
+        public final ModConfigSpec.ConfigValue<Boolean> freezingWater;
 
         private Common(ModConfigSpec.Builder builder) {
             builder.comment("Windswept Content Tweaks").push("content");
-            this.woodenBucketDurability = builder.comment("How much durability Wooden Buckets should have").defineInRange("Wooden Bucket Durability", 24, 1, 1000);
+            this.woodenBucketDurabilty = builder.comment("How much durability Wooden Buckets should have").defineInRange("Wooden Bucket Durability", 24, 1, 1000);
             this.bumblebeeDiscChance = builder.comment("The chance that the Bumblebee Music Disc should drop from Beehives and Bee Nests").defineInRange("Bumblebee Disc Chance", .01d, 0d, 1d);
             builder.pop();
 
@@ -54,11 +51,12 @@ public class WindsweptConfig {
             this.roots = builder.comment("Roots will grow under the dirt block below a tree, chestnut trees overhanging logs will grow roots").define("Tree Roots", true);
             builder.pop();
         }
+
     }
 
     public static class Client {
-        public final BooleanValue powderSnowParticles;
-        public final BooleanValue largerRabbits;
+        public final ModConfigSpec.ConfigValue<Boolean> powderSnowParticles;
+        public final ModConfigSpec.ConfigValue<Boolean> largerRabbits;
 
         public Client(ModConfigSpec.Builder builder) {
             builder.push("particles");
@@ -69,5 +67,7 @@ public class WindsweptConfig {
             this.largerRabbits = builder.comment("Rabbits will be 25% larger").define("Larger Rabbits", true);
             builder.pop();
         }
+
     }
+
 }

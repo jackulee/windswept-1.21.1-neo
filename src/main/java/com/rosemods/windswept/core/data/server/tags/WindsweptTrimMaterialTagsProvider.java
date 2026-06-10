@@ -1,21 +1,19 @@
 package com.rosemods.windswept.core.data.server.tags;
 
 import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.data.server.WindsweptDatapackProvider;
 import com.rosemods.windswept.core.registry.datapack.WindsweptTrimMaterials;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintTrimMaterialTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public class WindsweptTrimMaterialTagsProvider extends TagsProvider<TrimMaterial> {
 
-    public WindsweptTrimMaterialTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, Registries.TRIM_MATERIAL, provider, Windswept.MOD_ID, helper);
+    public WindsweptTrimMaterialTagsProvider(GatherDataEvent event, WindsweptDatapackProvider dataPack) {
+        super(event.getGenerator().getPackOutput(), Registries.TRIM_MATERIAL, dataPack.getRegistryProvider(), Windswept.MOD_ID, event.getExistingFileHelper());
     }
 
     @Override

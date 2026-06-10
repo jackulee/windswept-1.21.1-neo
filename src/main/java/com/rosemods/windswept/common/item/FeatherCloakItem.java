@@ -2,7 +2,7 @@ package com.rosemods.windswept.common.item;
 
 import com.rosemods.windswept.core.Windswept;
 import com.rosemods.windswept.core.other.WindsweptDataProcessors;
-import com.rosemods.windswept.core.other.WindsweptTiers;
+import com.rosemods.windswept.core.registry.WindsweptArmorMaterials;
 import com.rosemods.windswept.core.registry.WindsweptParticleTypes;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import net.minecraft.ChatFormatting;
@@ -23,21 +23,24 @@ import java.util.List;
 @EventBusSubscriber(modid = Windswept.MOD_ID, value = Dist.CLIENT)
 public class FeatherCloakItem extends ArmorItem {
     public FeatherCloakItem(Properties properties) {
-        super(WindsweptTiers.FEATHER_CLOAK, Type.CHESTPLATE, properties);
+        super(WindsweptArmorMaterials.FEATHER_CLOAK, Type.CHESTPLATE, properties);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        tooltip.add(Component.translatable(this.getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable(this.getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
     }
 
     public static void spawnFeatherCloakParticle(LivingEntity entity) {
-        if (!(entity.level() instanceof ServerLevel level)) return;
         for (int y = -9; y < 9; y++) {
             Vec3 angle = entity.calculateViewVector(0, y * 20f);
+
             for (int i = 0; i < 3; i++) {
                 Vec3 vector = new Vec3(entity.getRandomX(.25f), entity.getRandomY(), entity.getRandomZ(.25f)).add(angle);
-                level.sendParticles(WindsweptParticleTypes.FEATHER_CLOAK.get(), vector.x, vector.y, vector.z, 1, 0f, 0f, 0f, 0f);
+
+                if (entity.level() instanceof ServerLevel level)
+                    level.sendParticles(WindsweptParticleTypes.FEATHER_CLOAK.get(),
+                            vector.x, vector.y, vector.z, 1, 0f, 0f, 0f, 0f);
             }
         }
     }
@@ -45,7 +48,10 @@ public class FeatherCloakItem extends ArmorItem {
     @SubscribeEvent
     public static void livingRender(RenderLivingEvent.Pre<?, ?> event) {
         LivingEntity entity = event.getEntity();
-        if (entity instanceof IDataManager data && data.getValue(WindsweptDataProcessors.CLOAKED))
+        IDataManager data = (IDataManager) entity;
+
+        if (data.getValue(WindsweptDataProcessors.CLOAKED))
             event.setCanceled(true);
     }
+
 }

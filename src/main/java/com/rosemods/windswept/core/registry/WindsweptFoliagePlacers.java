@@ -10,5 +10,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class WindsweptFoliagePlacers {
     public static final DeferredRegister<FoliagePlacerType<?>> FOLIAGE_PLACERS = DeferredRegister.create(Registries.FOLIAGE_PLACER_TYPE, Windswept.MOD_ID);
 
-    public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<?>> CHESTNUT_FOLIAGE_PLACER = FOLIAGE_PLACERS.register("chestnut_foliage_placer", () -> new FoliagePlacerType<>(ChestnutFoliagePlacer.CODEC));
+    public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<ChestnutFoliagePlacer>> CHESTNUT_FOLIAGE_PLACER = FOLIAGE_PLACERS.register("chestnut_foliage_placer", () -> new FoliagePlacerType<>(ChestnutFoliagePlacer.CODEC));
+
 }

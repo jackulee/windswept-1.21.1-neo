@@ -1,23 +1,21 @@
 package com.rosemods.windswept.core.data.server.tags;
 
 import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.data.server.WindsweptDatapackProvider;
 import com.rosemods.windswept.core.other.tags.WindsweptEntityTypeTags;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintEntityTypeTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import static com.rosemods.windswept.core.registry.WindsweptEntityTypes.*;
 
 public class WindsweptEntityTagProvider extends EntityTypeTagsProvider {
 
-    public WindsweptEntityTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, provider, Windswept.MOD_ID, helper);
+    public WindsweptEntityTagProvider(GatherDataEvent event, WindsweptDatapackProvider dataPack) {
+        super(event.getGenerator().getPackOutput(), dataPack.getRegistryProvider(), Windswept.MOD_ID, event.getExistingFileHelper());
     }
 
     @Override
@@ -30,3 +28,4 @@ public class WindsweptEntityTagProvider extends EntityTypeTagsProvider {
     }
 
 }
+

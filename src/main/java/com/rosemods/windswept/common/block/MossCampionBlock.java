@@ -15,7 +15,8 @@ public class MossCampionBlock extends FlowerBlock {
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        return canSupportCenter((LevelReader) level, pos, Direction.UP);
+    protected boolean mayPlaceOn(BlockState state, BlockGetter getter, BlockPos pos) {
+        return canSupportCenter((LevelReader) getter, pos, Direction.UP);
     }
+
 }

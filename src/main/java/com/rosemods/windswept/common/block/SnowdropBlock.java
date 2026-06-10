@@ -14,7 +14,8 @@ public class SnowdropBlock extends FlowerBlock {
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        return super.mayPlaceOn(state, level, pos) || state.is(Blocks.SNOW_BLOCK);
+    protected boolean mayPlaceOn(BlockState state, BlockGetter getter, BlockPos pos) {
+        return super.mayPlaceOn(state, getter, pos) || state.is(Blocks.SNOW_BLOCK);
     }
+
 }

@@ -4,21 +4,21 @@ import com.mojang.datafixers.util.Pair;
 import com.rosemods.windswept.core.Windswept;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class WindsweptPotPatterns {
-    public static final DeferredRegister<String> DECORATED_POT_PATTERNS = DeferredRegister.create(Registries.DECORATED_POT_PATTERN, Windswept.MOD_ID);
+    public static final DeferredRegister<DecoratedPotPattern> DECORATED_POT_PATTERNS = DeferredRegister.create(Registries.DECORATED_POT_PATTERN, Windswept.MOD_ID);
 
-    public static final DeferredHolder<String, String> HOOT = register("hoot");
-    public static final DeferredHolder<String, String> PLUMAGE = register("plumage");
-    public static final DeferredHolder<String, String> OFFSHOOT = register("offshoot");
-    public static final DeferredHolder<String, String> FLAKE = register("flake");
-    public static final DeferredHolder<String, String> DRUPES = register("drupes");
+    public static final DeferredHolder<DecoratedPotPattern, ?> HOOT = register("hoot");
+    public static final DeferredHolder<DecoratedPotPattern, ?> PLUMAGE = register("plumage");
+    public static final DeferredHolder<DecoratedPotPattern, ?> OFFSHOOT = register("offshoot");
+    public static final DeferredHolder<DecoratedPotPattern, ?> FLAKE = register("flake");
+    public static final DeferredHolder<DecoratedPotPattern, ?> DRUPES = register("drupes");
 
-    private static DeferredHolder<String, String> register(String name) {
-        String register = name + "_pottery_pattern";
-        return DECORATED_POT_PATTERNS.register(register, () -> register);
+    public static DeferredHolder<DecoratedPotPattern, ?> register(String name) {
+        return DECORATED_POT_PATTERNS.register(name, () -> new DecoratedPotPattern(Windswept.location(name + "_pottery_pattern")));
     }
 
     public static void registerPatterns() {
@@ -30,4 +30,5 @@ public final class WindsweptPotPatterns {
                 Pair.of(WindsweptItems.DRUPES_POTTERY_SHERD.get(), DRUPES)
         );
     }
+
 }

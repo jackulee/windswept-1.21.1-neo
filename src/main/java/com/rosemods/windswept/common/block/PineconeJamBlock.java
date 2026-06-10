@@ -1,6 +1,7 @@
 package com.rosemods.windswept.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,19 +20,18 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public class PineconeJamBlock extends HalfTransparentBlock implements SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    private static final VoxelShape SHAPE = Block.box(5.0D, 5.0D, 5.0D, 11.0D, 11.0D, 11.0D);
+    private static final VoxelShape SHAPE = Block.box(5f, 5f, 5f, 11f, 11f, 11f);
 
     public PineconeJamBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
@@ -41,19 +41,24 @@ public class PineconeJamBlock extends HalfTransparentBlock implements SimpleWate
     }
 
     @Override
+    public boolean isSlimeBlock(BlockState state) {
+        return true;
+    }
+
+    @Override
     public boolean canStickTo(BlockState state, BlockState other) {
         ResourceLocation location = BuiltInRegistries.BLOCK.getKey(other.getBlock());
 
-        if (other.is(Blocks.SLIME_BLOCK) || other.is(Blocks.HONEY_BLOCK) || location.equals(ResourceLocation.fromNamespaceAndPath("autumnity", "snail_goo_block"))
-                || location.equals(ResourceLocation.fromNamespaceAndPath("atmospheric", "aloe_gel_block")) || location.equals(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "mulberry_jam_block")))
+        if (other.is(Blocks.SLIME_BLOCK) || other.is(Blocks.HONEY_BLOCK) || location.equals(ResourceLocation.tryBuild("autumnity", "snail_goo_block"))
+                || location.equals(ResourceLocation.tryBuild("atmospheric", "aloe_gel_block")) || location.equals(ResourceLocation.tryBuild("upgrade_aquatic", "mulberry_jam_block")))
             return false;
 
         return state.isStickyBlock() || other.isStickyBlock();
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        entity.makeStuckInBlock(state, new Vec3(0.3D, 0.3D, 0.3D));
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        entity.makeStuckInBlock(state, new Vec3(.3f, .3f, .3f));
     }
 
     @Override
@@ -62,7 +67,7 @@ public class PineconeJamBlock extends HalfTransparentBlock implements SimpleWate
     }
 
     @Override
-    protected FluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
 
@@ -70,4 +75,5 @@ public class PineconeJamBlock extends HalfTransparentBlock implements SimpleWate
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED);
     }
+
 }

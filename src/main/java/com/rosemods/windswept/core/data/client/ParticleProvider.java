@@ -10,7 +10,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -35,7 +34,7 @@ public abstract class ParticleProvider implements DataProvider {
 
     protected void add(ParticleType<?> particle, String... textures) {
         this.particles.put(BuiltInRegistries.PARTICLE_TYPE.getKey(particle).getPath(),
-                new ParticleDefinition(Arrays.stream(textures).map(s -> ResourceLocation.fromNamespaceAndPath(this.modid, s).toString()).toList()));
+                new ParticleDefinition(Arrays.stream(textures).map(s -> this.modid + ':' + s).toList()));
     }
 
     @Override
@@ -59,10 +58,13 @@ public abstract class ParticleProvider implements DataProvider {
     }
 
     private record ParticleDefinition(List<String> entries) {
-        private static final Codec<ParticleDefinition> CODEC = RecordCodecBuilder.create(textures -> textures.group(Codec.STRING.listOf().fieldOf("textures").forGetter(ParticleDefinition::entries)).apply(textures, ParticleDefinition::new));
+        private static final Codec<ParticleDefinition> CODEC = RecordCodecBuilder.create(textures -> textures.group(
+                Codec.STRING.listOf().fieldOf("textures").forGetter(ParticleDefinition::entries)
+        ).apply(textures, ParticleDefinition::new));
 
         public JsonElement serialize() {
             return CODEC.encodeStart(JsonOps.INSTANCE, this).getOrThrow(s -> new IllegalStateException("Failed to encode particle: " + s));
         }
     }
+
 }

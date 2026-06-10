@@ -3,7 +3,8 @@ package com.rosemods.windswept.core.registry.util;
 import com.teamabnormals.blueprint.common.effect.BlueprintMobEffect;
 import com.teamabnormals.blueprint.core.util.registry.ISubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,7 +21,7 @@ public class EffectSubRegistryHelper implements ISubRegistryHelper<MobEffect> {
     protected final DeferredRegister<Potion> potionRegister;
 
     public EffectSubRegistryHelper(RegistryHelper parent) {
-        this(parent, DeferredRegister.create(Registries.MOB_EFFECT, parent.getModId()), DeferredRegister.create(Registries.POTION, parent.getModId()));
+        this(parent, DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, parent.getModId()), DeferredRegister.create(BuiltInRegistries.POTION, parent.getModId()));
     }
 
     public EffectSubRegistryHelper(RegistryHelper parent, DeferredRegister<MobEffect> effectRegister, DeferredRegister<Potion> potionRegister) {
@@ -37,8 +38,8 @@ public class EffectSubRegistryHelper implements ISubRegistryHelper<MobEffect> {
         return this.effectRegister.register(name, () -> new BlueprintMobEffect(effectType, liquidColor));
     }
 
-    public DeferredHolder<Potion, Potion> createPotion(String name, Supplier<? extends MobEffect> effect, int duration, int strength) {
-        return this.potionRegister.register(name, () -> new Potion(new MobEffectInstance(effect.get(), duration, strength)));
+    public DeferredHolder<Potion, Potion> createPotion(String name, Holder<MobEffect> effect, int duration, int strength) {
+        return this.potionRegister.register(name, () -> new Potion(new MobEffectInstance(effect, duration, strength)));
     }
 
     @Override
@@ -56,4 +57,5 @@ public class EffectSubRegistryHelper implements ISubRegistryHelper<MobEffect> {
         this.effectRegister.register(eventBus);
         this.potionRegister.register(eventBus);
     }
+
 }

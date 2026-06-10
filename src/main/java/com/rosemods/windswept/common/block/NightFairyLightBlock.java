@@ -16,7 +16,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 public class NightFairyLightBlock extends PineconeBlock implements EntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -30,6 +33,7 @@ public class NightFairyLightBlock extends PineconeBlock implements EntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
         Level level = context.getLevel();
+
         return state != null ? state.setValue(LIT, !level.isDay() && level.dimensionType().hasSkyLight()) : null;
     }
 
@@ -39,20 +43,20 @@ public class NightFairyLightBlock extends PineconeBlock implements EntityBlock {
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new NightFairyLightBlockEntity(pos, state);
     }
 
-    @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return !level.isClientSide && level.dimensionType().hasSkyLight() ? BaseEntityBlock.createTickerHelper(type, WindsweptBlockEntities.NIGHT_FAIRY_LIGHT.get(), NightFairyLightBlockEntity::tick) : null;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(LIT)) {
+        if (state.getValue(LIT))
             NightshadeFlowerBlock.particles(level, pos, random);
-        }
     }
+
 }

@@ -1,18 +1,16 @@
 package com.rosemods.windswept.core.data.server.tags;
 
 import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.data.server.WindsweptDatapackProvider;
 import com.rosemods.windswept.core.registry.datapack.WindsweptStructures;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.StructureTagsProvider;
 import net.minecraft.tags.StructureTags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public class WindsweptStructureTagsProvider extends StructureTagsProvider {
-    public WindsweptStructureTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, provider, Windswept.MOD_ID, helper);
+    public WindsweptStructureTagsProvider(GatherDataEvent event, WindsweptDatapackProvider dataPack) {
+        super(event.getGenerator().getPackOutput(), dataPack.getRegistryProvider(), Windswept.MOD_ID, event.getExistingFileHelper());
     }
 
     @Override

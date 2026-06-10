@@ -6,8 +6,10 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,6 +18,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class RedstoneFairyLightBlock extends PineconeBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -26,20 +30,26 @@ public class RedstoneFairyLightBlock extends PineconeBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
-        boolean lit = state.getValue(LIT);
-        level.setBlock(pos, state.setValue(LIT, !lit), 3);
-        level.playSound(player, pos, lit ? SoundEvents.CHERRY_WOOD_PRESSURE_PLATE_CLICK_OFF : SoundEvents.CHERRY_WOOD_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS);
-        return InteractionResult.SUCCESS;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (player.getItemInHand(hand).isEmpty()) {
+            boolean lit = state.getValue(LIT);
+            level.setBlock(pos, state.setValue(LIT, !lit), 3);
+            level.playSound(player, pos, lit ? SoundEvents.CHERRY_WOOD_PRESSURE_PLATE_CLICK_OFF : SoundEvents.CHERRY_WOOD_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS);
+
+
+            return ItemInteractionResult.SUCCESS;
+        }
+
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
-    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return direction == Direction.DOWN && state.getValue(LIT) ? Math.min(state.getValue(AMOUNT) * 4, 15) : 0;
     }
 
     @Override
-    protected boolean isSignalSource(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return state.getValue(LIT);
     }
 
@@ -48,13 +58,15 @@ public class RedstoneFairyLightBlock extends PineconeBlock {
         builder.add(AMOUNT, LIT);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (state.getValue(LIT)) {
-            double d0 = (double)pos.getX() + 0.5D + (random.nextDouble() - 0.5D) * 0.8D;
-            double d1 = (double)pos.getY() + 0.7D + (random.nextDouble() - 0.5D) * 0.3D;
-            double d2 = (double)pos.getZ() + 0.5D + (random.nextDouble() - 0.5D) * 0.8D;
-            level.addParticle(DustParticleOptions.REDSTONE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            double d0 = (double) pos.getX() + .5d + (random.nextDouble() - .5d) * .8d;
+            double d1 = (double) pos.getY() + .7d + (random.nextDouble() - .5d) * .3d;
+            double d2 = (double) pos.getZ() + .5d + (random.nextDouble() - .5d) * .8d;
+            level.addParticle(DustParticleOptions.REDSTONE, d0, d1, d2, 0d, 0d, 0d);
         }
     }
+
 }

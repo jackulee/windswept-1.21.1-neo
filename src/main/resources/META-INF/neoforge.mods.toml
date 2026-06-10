@@ -1,37 +1,36 @@
-modLoader = "${modLoader}"
-loaderVersion = "${loaderVersion}"
-issueTrackerURL = "${issueTrackerURL}"
-license = "${license}"
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/rosevcook/windswept/issues"
+license = "All Rights Reserved"
 
 [[mixins]]
-    config = "${mod_id}.mixins.json"
+    config = "windswept.mixins.json"
 
 [[mods]]
-    modId = "${mod_id}"
+    modId = "windswept"
     version = "${mod_version}"
-    displayName = "${mod_name}"
+    displayName = "Windswept"
     logoFile = "logo.png"
-    itemIcon = "windswept:holly_wreath"
-    configBackground = "windswept:textures/block/holly_log.png"
+    itemIcon = "windswept:textures/block/holly_log.png"
     displayURL = "https://www.curseforge.com/minecraft/mc-mods/windsweptmod"
     authors = "Rose, Yape"
-    description = '''Windswept is a vanilla-esque mod that vastly expands colder regions of the game. It adds new biomes such as Tundras, Pine Barrens, Chestnut Forests, Lavender Fields, and Flowering Savannas, along with new flowers, enemies, and much more—basically a whole bunch of content related to winter!'''
+    description = ''''Windswept is a vanilla-esque mod that vastly expands colder regions of the game. It adds new biomes such as Tundras, Pine Barrens, Chestnut Forests, Lavender Fields, and Flowering Savannas, along with new flowers, enemies, and much more—basically a whole bunch of content related to winter!'''
 
-[[dependencies.${mod_id}]]
-    modId = "neoforge"
-    type = "required"
-    versionRange = "[${neoforge},)"
-    ordering = "AFTER"
-    side = "BOTH"
-
-[[dependencies.${mod_id}]]
+[[dependencies.windswept]]
     modId = "minecraft"
     type = "required"
     versionRange = "[${mc_version}]"
     ordering = "AFTER"
     side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.windswept]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${neoforge},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.windswept]]
     modId = "blueprint"
     type = "required"
     versionRange = "[${blueprint},)"

@@ -1,13 +1,11 @@
 package com.rosemods.windswept.common.block;
 
-import com.mojang.serialization.MapCodec;
-import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.other.WindsweptConstants;
 import com.rosemods.windswept.core.other.tags.WindsweptItemTags;
 import com.rosemods.windswept.core.registry.WindsweptEffects;
 import com.rosemods.windswept.core.registry.WindsweptItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,19 +27,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.fml.ModList;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public class ChristmasPuddingBlock extends Block {
-    public static final MapCodec<ChristmasPuddingBlock> CODEC = simpleCodec(ChristmasPuddingBlock::new);
     public static final EnumProperty<PuddingStates> STATE = EnumProperty.create("state", PuddingStates.class);
-
     private static final VoxelShape[] SHAPE_BY_BITES = {
             Block.box(2f, 0f, 2f, 8f, 8f, 8f),
             Block.box(2f, 0f, 2f, 8f, 8f, 14f),
@@ -58,12 +52,7 @@ public class ChristmasPuddingBlock extends Block {
     }
 
     @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
-    }
-
-    @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE_BY_BITES[state.getValue(STATE).getIndex()];
     }
 
@@ -75,22 +64,21 @@ public class ChristmasPuddingBlock extends Block {
             case ONE -> {
                 level.removeBlock(pos, false);
                 level.gameEvent(player, GameEvent.BLOCK_DESTROY, pos);
-                popResource(level, pos, WindsweptItems.HOLLY_BERRIES.get().getDefaultInstance());
+                popResourceFromFace(level, pos/*.offset(.5f, -.5f, .5f)*/, Direction.UP, WindsweptItems.HOLLY_BERRIES.get().getDefaultInstance());
             }
         }
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         PuddingStates puddingState = state.getValue(STATE);
 
         if (stack.is(Items.FLINT_AND_STEEL) && puddingState == PuddingStates.FOUR) {
             level.setBlock(pos, state.setValue(STATE, PuddingStates.FIRE), 3);
             level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1f, level.getRandom().nextFloat() * .4f + .8f);
 
-            if (player instanceof ServerPlayer serverPlayer) {
-                stack.hurtAndBreak(1, serverPlayer, player.getEquipmentSlotForItem(stack));
-            }
+            //if (!level.isClientSide && !player.getAbilities().instabuild)
+            //    stack.hurt(1, level.getRandom(), (ServerPlayer) player);
 
             return ItemInteractionResult.SUCCESS;
         } else if (puddingState != PuddingStates.FIRE && stack.is(WindsweptItemTags.KNIVES) && ModList.get().isLoaded("windswept_delights")) {
@@ -98,8 +86,7 @@ public class ChristmasPuddingBlock extends Block {
             level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.PLAYERS, .8f, .8f);
 
-            ResourceLocation sliceId = ResourceLocation.fromNamespaceAndPath("windswept_delights", "christmas_pudding_slice");
-            popResource(level, pos, BuiltInRegistries.ITEM.get(sliceId).getDefaultInstance());
+            popResourceFromFace(level, pos/*.offset(.5f, -.5f, .5f)*/, Direction.UP, WindsweptConstants.getItem("windswept_delights", "christmas_pudding_slice").getDefaultInstance());
             return ItemInteractionResult.SUCCESS;
         } else if (puddingState != PuddingStates.FIRE && player.canEat(false)) {
             player.awardStat(Stats.EAT_CAKE_SLICE);
@@ -125,7 +112,7 @@ public class ChristmasPuddingBlock extends Block {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         return this.canSurvive(state, level, currentPos) ? state : Blocks.AIR.defaultBlockState();
     }
 
@@ -134,16 +121,33 @@ public class ChristmasPuddingBlock extends Block {
         builder.add(STATE);
     }
 
-    @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType type) {
-        return false;
+    public enum PuddingStates implements StringRepresentable {
+        FIRE("fire"),
+        FOUR("4"),
+        THREE("3"),
+        TWO("2"),
+        ONE("1");
+
+        private final String name;
+
+        PuddingStates(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return this == PuddingStates.FIRE ? 3 : Integer.parseInt(this.getSerializedName()) - 1;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return this.name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+
     }
 
-    public enum PuddingStates implements StringRepresentable {
-        FIRE("fire"), FOUR("4"), THREE("3"), TWO("2"), ONE("1");
-        private final String name;
-        PuddingStates(String name) { this.name = name; }
-        public int getIndex() { return this == PuddingStates.FIRE ? 3 : Integer.parseInt(this.name) - 1; }
-        @Override public String getSerializedName() { return this.name; }
-    }
 }

@@ -16,9 +16,9 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.neoforged.neoforge.common.NeoForgeBiomeModifiers;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
@@ -31,6 +31,7 @@ import static com.rosemods.windswept.core.registry.datapack.WindsweptPlacedFeatu
 
 public final class WindsweptBiomeModifiers {
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
+        // features
         addFeature(context, "bluebells", WindsweptBiomeTags.HAS_BLUEBELLS, Decoration.VEGETAL_DECORATION, BLUEBELLS);
         addFeature(context, "snowy_sprouts", Tags.Biomes.IS_SNOWY, Decoration.VEGETAL_DECORATION, SNOWY_SPROUTS);
         addFeature(context, "foxgloves", BiomeTags.IS_TAIGA, Decoration.VEGETAL_DECORATION, FOXGLOVE);
@@ -53,9 +54,11 @@ public final class WindsweptBiomeModifiers {
         addFeature(context, "lions_tails", WindsweptBiomeTags.HAS_LIONS_TAIL, Decoration.VEGETAL_DECORATION, LIONS_TAIL);
         addFeature(context, "rare_yellow_petals", BiomeTags.IS_SAVANNA, Decoration.VEGETAL_DECORATION, RARE_YELLOW_PETALS);
 
+        // spawns
         addSpawn(context, "chilled", Tags.Biomes.IS_SNOWY, new MobSpawnSettings.SpawnerData(WindsweptEntityTypes.CHILLED.get(), 5, 3, 7));
         addSpawn(context, "frostbiter", Tags.Biomes.IS_SNOWY, new MobSpawnSettings.SpawnerData(WindsweptEntityTypes.FROSTBITER.get(), 3, 1, 3));
 
+        // removed features
         removeFeature(context, "grove_spruce_trees", Biomes.GROVE, Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_GROVE);
         removeFeature(context, "taiga_default_flowers", BiomeTags.IS_TAIGA, Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_DEFAULT);
         removeFeature(context, "snowy_default_flowers", Tags.Biomes.IS_SNOWY, Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_DEFAULT);
@@ -65,26 +68,26 @@ public final class WindsweptBiomeModifiers {
 
     @SafeVarargs
     private static void addFeature(BootstrapContext<BiomeModifier> context, String name, TagKey<Biome> biomes, Decoration step, ResourceKey<PlacedFeature>... features) {
-        register(context, "add_feature/" + name, () -> new NeoForgeBiomeModifiers.AddFeaturesBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), featureSet(context, features), step));
+        register(context, "add_feature/" + name, () -> new BiomeModifiers.AddFeaturesBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), featureSet(context, features), step));
     }
 
     @SafeVarargs
     private static void addFeature(BootstrapContext<BiomeModifier> context, String name, ResourceKey<Biome> biome, Decoration step, ResourceKey<PlacedFeature>... features) {
-        register(context, "add_feature/" + name, () -> new NeoForgeBiomeModifiers.AddFeaturesBiomeModifier(HolderSet.direct(context.lookup(Registries.BIOME).getOrThrow(biome)), featureSet(context, features), step));
+        register(context, "add_feature/" + name, () -> new BiomeModifiers.AddFeaturesBiomeModifier(HolderSet.direct(context.lookup(Registries.BIOME).getOrThrow(biome)), featureSet(context, features), step));
     }
 
     @SafeVarargs
     private static void removeFeature(BootstrapContext<BiomeModifier> context, String name, TagKey<Biome> biomes, Decoration step, ResourceKey<PlacedFeature>... features) {
-        register(context, "removed_features/" + name, () -> new NeoForgeBiomeModifiers.RemoveFeaturesBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), featureSet(context, features), Set.of(step)));
+        register(context, "removed_features/" + name, () -> new BiomeModifiers.RemoveFeaturesBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), featureSet(context, features), Set.of(step)));
     }
 
     @SafeVarargs
     private static void removeFeature(BootstrapContext<BiomeModifier> context, String name, ResourceKey<Biome> biome, Decoration step, ResourceKey<PlacedFeature>... features) {
-        register(context, "removed_features/" + name, () -> new NeoForgeBiomeModifiers.RemoveFeaturesBiomeModifier(HolderSet.direct(context.lookup(Registries.BIOME).getOrThrow(biome)), featureSet(context, features), Set.of(step)));
+        register(context, "removed_features/" + name, () -> new BiomeModifiers.RemoveFeaturesBiomeModifier(HolderSet.direct(context.lookup(Registries.BIOME).getOrThrow(biome)), featureSet(context, features), Set.of(step)));
     }
 
     private static void addSpawn(BootstrapContext<BiomeModifier> context, String name, TagKey<Biome> biomes, MobSpawnSettings.SpawnerData... spawns) {
-        register(context, "add_spawn/" + name, () -> new NeoForgeBiomeModifiers.AddSpawnsBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), List.of(spawns)));
+        register(context, "add_spawn/" + name, () -> new BiomeModifiers.AddSpawnsBiomeModifier(context.lookup(Registries.BIOME).getOrThrow(biomes), List.of(spawns)));
     }
 
     private static void register(BootstrapContext<BiomeModifier> context, String name, Supplier<? extends BiomeModifier> modifier) {
@@ -95,4 +98,5 @@ public final class WindsweptBiomeModifiers {
     private static HolderSet<PlacedFeature> featureSet(BootstrapContext<?> context, ResourceKey<PlacedFeature>... features) {
         return HolderSet.direct(Stream.of(features).map(placedFeatureKey -> context.lookup(Registries.PLACED_FEATURE).getOrThrow(placedFeatureKey)).collect(Collectors.toList()));
     }
+
 }

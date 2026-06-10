@@ -1,5 +1,6 @@
 package com.rosemods.windswept.common.block;
 
+import com.mojang.serialization.MapCodec;
 import com.rosemods.windswept.common.block_entity.WillOTheWispBlockEntity;
 import com.rosemods.windswept.core.registry.WindsweptBlockEntities;
 import com.rosemods.windswept.core.registry.WindsweptParticleTypes;
@@ -19,12 +20,20 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class WillOTheWispBlock extends HorizontalDirectionalBlock implements EntityBlock {
+    public static final MapCodec<WillOTheWispBlock> CODEC = simpleCodec(WillOTheWispBlock::new);
+
     public WillOTheWispBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -38,24 +47,24 @@ public class WillOTheWispBlock extends HorizontalDirectionalBlock implements Ent
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new WillOTheWispBlockEntity(pos, state);
     }
 
     @Override
-    @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return !level.isClientSide ? BaseEntityBlock.createTickerHelper(type, WindsweptBlockEntities.WILL_O_THE_WISP.get(), WillOTheWispBlockEntity::tick) : null;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         for (int i = 0; i < 6; i++) {
             BlockPos blockPos = new BlockPos(pos.getX() + Mth.nextInt(rand, -7, 7), pos.getY() - rand.nextInt(7), pos.getZ() + Mth.nextInt(rand, -7, 7)).relative(state.getValue(FACING), 3);
 
-            if (!level.getBlockState(blockPos).isCollisionShapeFullBlock(level, blockPos)) {
-                level.addParticle(rand.nextInt(10) == 0 ? ParticleTypes.END_ROD : WindsweptParticleTypes.WILL_O_THE_WISP.get(), (double) blockPos.getX() + rand.nextDouble(), (double) blockPos.getY() + rand.nextDouble(), (double) blockPos.getZ() + rand.nextDouble(), 0.0D, 0.0D, 0.0D);
-            }
+            if (!level.getBlockState(blockPos).isCollisionShapeFullBlock(level, blockPos))
+                level.addParticle(rand.nextInt(10) == 0 ? ParticleTypes.END_ROD : WindsweptParticleTypes.WILL_O_THE_WISP.get(), (double) blockPos.getX() + rand.nextDouble(), (double) blockPos.getY() + rand.nextDouble(), (double) blockPos.getZ() + rand.nextDouble(), 0d, 0d, 0d);
         }
     }
+
 }

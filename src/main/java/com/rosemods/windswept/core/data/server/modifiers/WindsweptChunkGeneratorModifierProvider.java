@@ -1,22 +1,21 @@
 package com.rosemods.windswept.core.data.server.modifiers;
 
 import com.rosemods.windswept.core.Windswept;
+import com.rosemods.windswept.core.data.server.WindsweptDatapackProvider;
 import com.rosemods.windswept.core.registry.datapack.WindsweptBiomes;
 import com.teamabnormals.blueprint.common.world.modification.chunk.ChunkGeneratorModifierProvider;
 import com.teamabnormals.blueprint.common.world.modification.chunk.modifiers.SurfaceRuleModifier;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import static net.minecraft.world.level.levelgen.SurfaceRules.*;
 
 public class WindsweptChunkGeneratorModifierProvider extends ChunkGeneratorModifierProvider {
-    public WindsweptChunkGeneratorModifierProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-        super(Windswept.MOD_ID, output, provider);
+    public WindsweptChunkGeneratorModifierProvider(GatherDataEvent event, WindsweptDatapackProvider dataPack) {
+        super(Windswept.MOD_ID, event.getGenerator().getPackOutput(), dataPack.getRegistryProvider());
     }
 
     @Override

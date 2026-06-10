@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class LavenderBlock extends BushBlock implements BonemealableBlock {
     public static final MapCodec<LavenderBlock> CODEC = simpleCodec(LavenderBlock::new);
     public static final IntegerProperty AGE = BlockStateProperties.AGE_2;
     public static final BooleanProperty PERSISTENT = BlockStateProperties.PERSISTENT;
-    private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 14.0D, 14.0D);
+    private static final VoxelShape SHAPE = Block.box(2f, 0f, 2f, 14f, 14f, 14f);
 
     public LavenderBlock(Properties properties) {
         super(properties);
@@ -47,18 +48,19 @@ public class LavenderBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (!state.getValue(PERSISTENT) && stack.is(Items.SHEARS)) {
-            BlockState newState = state.setValue(PERSISTENT, true);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ItemStack held = player.getItemInHand(hand);
 
-            if (player instanceof ServerPlayer serverPlayer) {
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
-                stack.hurtAndBreak(1, serverPlayer, player.getEquipmentSlotForItem(stack));
-            }
+        if (!state.getValue(PERSISTENT) && held.is(Items.SHEARS)) {
+            BlockState state1 = state.setValue(PERSISTENT, true);
 
-            level.playSound(player, pos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
-            level.setBlockAndUpdate(pos, newState);
+            if (player instanceof ServerPlayer serverPlayer)
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, held);
+
+            level.playSound(player, player, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1f, 1f);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state1));
+            level.setBlockAndUpdate(pos, state1);
+            held.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
 
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
@@ -72,15 +74,14 @@ public class LavenderBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (level.getRawBrightness(pos.above(), 0) >= 9 && !state.getValue(PERSISTENT) && state.getValue(AGE) < 2) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+        if (level.getRawBrightness(pos.above(), 0) >= 9 && !state.getValue(PERSISTENT) && state.getValue(AGE) < 2)
             level.setBlockAndUpdate(pos, state.setValue(AGE, state.getValue(AGE) + 1));
-        }
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(level, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        Vec3 vec3 = state.getOffset(getter, pos);
         return SHAPE.move(vec3.x, vec3.y, vec3.z);
     }
 
@@ -100,9 +101,9 @@ public class LavenderBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        if (state.getValue(AGE) < 2) {
+    public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
+        if (state.getValue(AGE) < 2)
             level.setBlockAndUpdate(pos, state.setValue(AGE, state.getValue(AGE) + 1).setValue(PERSISTENT, false));
-        }
     }
+
 }

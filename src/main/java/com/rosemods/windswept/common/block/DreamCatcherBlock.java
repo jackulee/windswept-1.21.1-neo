@@ -34,7 +34,7 @@ public class DreamCatcherBlock extends DoublePlantBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos blockpos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos blockpos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER : LOWER;
     }
 
@@ -50,21 +50,25 @@ public class DreamCatcherBlock extends DoublePlantBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide)
             if (player.isCreative()) {
                 if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
                     BlockPos blockpos = pos.above();
                     BlockState blockstate = level.getBlockState(blockpos);
+
                     if (blockstate.is(state.getBlock()) && blockstate.getValue(HALF) == DoubleBlockHalf.UPPER) {
                         level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
                         level.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
                     }
                 }
-            } else {
+            } else
                 dropResources(state, level, pos, null, player, player.getMainHandItem());
-            }
-        }
+
+
+        this.spawnDestroyParticles(level, player, pos, state);
+        level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(player, state));
 
         return super.playerWillDestroy(level, pos, state, player);
     }
+
 }

@@ -18,4 +18,5 @@ public final class WindsweptDamageTypes {
     private static ResourceKey<DamageType> createKey(String name) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, Windswept.location(name));
     }
+
 }

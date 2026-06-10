@@ -3,7 +3,7 @@ package com.rosemods.windswept.core.data.client;
 import com.mojang.datafixers.util.Pair;
 import com.rosemods.windswept.common.block.*;
 import com.rosemods.windswept.core.Windswept;
-import com.rosemods.windswept.core.registry.WindsweptPaintingVariants;
+import com.rosemods.windswept.core.registry.datapack.WindsweptPaintingVariants;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
@@ -11,7 +11,8 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.data.client.BlueprintBlockStateProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.Item;
@@ -21,9 +22,8 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Function;
@@ -33,71 +33,72 @@ import static com.rosemods.windswept.core.registry.WindsweptBlocks.*;
 import static com.rosemods.windswept.core.registry.WindsweptItems.*;
 
 public class WindsweptModelProvider extends BlueprintBlockStateProvider {
-    public WindsweptModelProvider(PackOutput output, ExistingFileHelper helper) {
-        super(output, Windswept.MOD_ID, helper);
+    public WindsweptModelProvider(GatherDataEvent event) {
+        super(event.getGenerator().getPackOutput(), Windswept.MOD_ID, event.getExistingFileHelper());
     }
 
     @Override
     protected void registerStatesAndModels() {
         // item models
-        this.generatedItem(HOLLY_BOAT.getFirst());
-        this.generatedItem(HOLLY_BOAT.getSecond());
-        this.generatedItem(CHESTNUT_BOAT.getFirst());
-        this.generatedItem(CHESTNUT_BOAT.getSecond());
-        this.generatedItem(PINE_BOAT.getFirst());
-        this.generatedItem(PINE_BOAT.getSecond());
-        this.generatedItem(HOLLY_BERRIES);
-        this.generatedItem(WOODEN_BUCKET);
-        this.generatedItem(WOODEN_MILK_BUCKET);
-        this.generatedItem(WOODEN_POWDER_SNOW_BUCKET);
-        this.generatedItem(WOODEN_WATER_BUCKET);
-        this.generatedItem(WOODEN_HONEY_BUCKET);
-        this.generatedItem(WOODEN_CHOCOLATE_BUCKET);
-        this.generatedItem(ELDER_FEATHER);
-        this.generatedItem(FEATHER_CLOAK);
-        this.generatedItem(WILD_BERRIES);
-        this.generatedItem(MUTTON_PIE);
-        this.generatedItem(GOAT);
-        this.generatedItem(COOKED_GOAT);
-        this.generatedItem(GOAT_STEW);
-        this.generatedItem(WILD_BERRY_PIPS);
-        this.generatedItemWithOverlay(SNOW_BOOTS);
-        this.generatedItem(FROST_ARROW);
-        this.itemOnAStick(HOLLY_BERRIES_ON_A_STICK);
-        this.generatedItem(FROZEN_FLESH);
-        this.generatedItem(FROZEN_BRANCH);
-        this.generatedItem(HOOT_POTTERY_SHERD);
-        this.generatedItem(PLUMAGE_POTTERY_SHERD);
-        this.generatedItem(OFFSHOOT_POTTERY_SHERD);
-        this.generatedItem(FLAKE_POTTERY_SHERD);
-        this.generatedItem(DRUPES_POTTERY_SHERD);
-        this.generatedItem(SNOW_GOLEM_BANNER_PATTERN);
-        this.generatedItem(SNOW_CHARGE_BANNER_PATTERN);
-        this.generatedItem(ROSE_FLOWER_BANNER_PATTERN);
-        this.generatedItem(MUSIC_DISC_RAIN);
-        this.generatedItem(MUSIC_DISC_SNOW);
-        this.generatedItem(MUSIC_DISC_BUMBLEBEE);
-        this.spawnEggItem(CHILLED_SPAWN_EGG, FROSTBITER_SPAWN_EGG);
-        this.generatedItem(HOLLY_FURNACE_BOAT);
-        this.generatedItem(LARGE_HOLLY_BOAT);
-        this.generatedItem(CHESTNUT_FURNACE_BOAT);
-        this.generatedItem(LARGE_CHESTNUT_BOAT);
-        this.generatedItem(PINE_FURNACE_BOAT);
-        this.generatedItem(LARGE_PINE_BOAT);
-        this.generatedItem(CHESTNUTS);
-        this.generatedItem(ROASTED_CHESTNUTS);
-        this.generatedItem(CHESTNUT_SOUP);
-        this.generatedItem(GINGER_ROOT);
-        this.generatedItem(GINGERBREAD_COOKIE);
-        this.generatedItem(SPICY_SNOW_CONE);
-        this.generatedItem(SWEET_SNOW_CONE);
-        this.generatedItem(MINTY_SNOW_CONE);
-        this.generatedItem(GINGER_TEA);
-        this.handheldItem(CANDY_CANE);
-        this.generatedItem(LAVENDER_TEA);
-        this.generatedItem(LAVENDER_CROWN);
-        this.generatedItem(ANTLER_HELMET);
-        this.generatedItem(PINECONE_JAM_BOTTLE);
+        this.generatedItem(HOLLY_BOAT.getFirst().get(), TextureFolder.ITEM);
+        this.generatedItem(HOLLY_BOAT.getSecond().get(), TextureFolder.ITEM);
+        this.generatedItem(CHESTNUT_BOAT.getFirst().get(), TextureFolder.ITEM);
+        this.generatedItem(CHESTNUT_BOAT.getSecond().get(), TextureFolder.ITEM);
+        this.generatedItem(PINE_BOAT.getFirst().get(), TextureFolder.ITEM);
+        this.generatedItem(PINE_BOAT.getSecond().get(), TextureFolder.ITEM);
+        this.generatedItem(HOLLY_BERRIES.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_MILK_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_POWDER_SNOW_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_WATER_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_HONEY_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(WOODEN_CHOCOLATE_BUCKET.get(), TextureFolder.ITEM);
+        this.generatedItem(ELDER_FEATHER.get(), TextureFolder.ITEM);
+        this.generatedItem(FEATHER_CLOAK.get(), TextureFolder.ITEM);
+        this.generatedItem(WILD_BERRIES.get(), TextureFolder.ITEM);
+        this.generatedItem(MUTTON_PIE.get(), TextureFolder.ITEM);
+        this.generatedItem(GOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(COOKED_GOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(GOAT_STEW.get(), TextureFolder.ITEM);
+        this.generatedItem(WILD_BERRY_PIPS.get(), TextureFolder.ITEM);
+        this.generatedItemWithOverlay(SNOW_BOOTS.get());
+        this.generatedItem(FROST_ARROW.get(), TextureFolder.ITEM);
+        this.itemOnAStick(HOLLY_BERRIES_ON_A_STICK.get(), TextureFolder.ITEM);
+        this.generatedItem(FROZEN_FLESH.get(), TextureFolder.ITEM);
+        this.generatedItem(FROZEN_BRANCH.get(), TextureFolder.ITEM);
+        this.generatedItem(HOOT_POTTERY_SHERD.get(), TextureFolder.ITEM);
+        this.generatedItem(PLUMAGE_POTTERY_SHERD.get(), TextureFolder.ITEM);
+        this.generatedItem(OFFSHOOT_POTTERY_SHERD.get(), TextureFolder.ITEM);
+        this.generatedItem(FLAKE_POTTERY_SHERD.get(), TextureFolder.ITEM);
+        this.generatedItem(DRUPES_POTTERY_SHERD.get(), TextureFolder.ITEM);
+        this.generatedItem(SNOW_GOLEM_BANNER_PATTERN.get(), TextureFolder.ITEM);
+        this.generatedItem(SNOW_CHARGE_BANNER_PATTERN.get(), TextureFolder.ITEM);
+        this.generatedItem(ROSE_FLOWER_BANNER_PATTERN.get(), TextureFolder.ITEM);
+        this.generatedItem(MUSIC_DISC_RAIN.get(), TextureFolder.ITEM);
+        this.generatedItem(MUSIC_DISC_SNOW.get(), TextureFolder.ITEM);
+        this.generatedItem(MUSIC_DISC_BUMBLEBEE.get(), TextureFolder.ITEM);
+        this.spawnEgg(CHILLED_SPAWN_EGG);
+        this.spawnEgg(FROSTBITER_SPAWN_EGG);
+        this.generatedItem(HOLLY_FURNACE_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(LARGE_HOLLY_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(CHESTNUT_FURNACE_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(LARGE_CHESTNUT_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(PINE_FURNACE_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(LARGE_PINE_BOAT.get(), TextureFolder.ITEM);
+        this.generatedItem(CHESTNUTS.get(), TextureFolder.ITEM);
+        this.generatedItem(ROASTED_CHESTNUTS.get(), TextureFolder.ITEM);
+        this.generatedItem(CHESTNUT_SOUP.get(), TextureFolder.ITEM);
+        this.generatedItem(GINGER_ROOT.get(), TextureFolder.ITEM);
+        this.generatedItem(GINGERBREAD_COOKIE.get(), TextureFolder.ITEM);
+        this.generatedItem(SPICY_SNOW_CONE.get(), TextureFolder.ITEM);
+        this.generatedItem(SWEET_SNOW_CONE.get(), TextureFolder.ITEM);
+        this.generatedItem(MINTY_SNOW_CONE.get(), TextureFolder.ITEM);
+        this.generatedItem(GINGER_TEA.get(), TextureFolder.ITEM);
+        this.handheldItem(CANDY_CANE.get(), TextureFolder.ITEM);
+        this.generatedItem(LAVENDER_TEA.get(), TextureFolder.ITEM);
+        this.generatedItem(LAVENDER_CROWN.get(), TextureFolder.ITEM);
+        this.generatedItem(ANTLER_HELMET.get(), TextureFolder.ITEM);
+        this.generatedItem(PINECONE_JAM_BOTTLE.get(), TextureFolder.ITEM);
 
         this.painting(WindsweptPaintingVariants.CLIFFSIDE);
         this.painting(WindsweptPaintingVariants.DRESS_CODES);
@@ -108,74 +109,84 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.painting(WindsweptPaintingVariants.ALLU_PINE);
 
         // holly
-        this.logBlocks(HOLLY_LOG, HOLLY_WOOD);
-        this.logBlocks(STRIPPED_HOLLY_LOG, STRIPPED_HOLLY_WOOD);
+        this.pillar(STRIPPED_HOLLY_LOG);
+        this.wood(STRIPPED_HOLLY_WOOD, this.blockTexture(STRIPPED_HOLLY_LOG.get()));
+        this.pillar(HOLLY_LOG);
+        this.wood(HOLLY_WOOD, this.blockTexture(HOLLY_LOG.get()));
         this.cubeAll(HOLLY_PLANKS);
-        this.slabBlock(HOLLY_SLAB, HOLLY_PLANKS);
-        this.stairsBlock(HOLLY_STAIRS, HOLLY_PLANKS);
-        this.fenceBlock(HOLLY_FENCE, HOLLY_PLANKS);
-        this.fenceGateBlock(HOLLY_FENCE_GATE, HOLLY_PLANKS);
-        this.pressurePlateBlock(HOLLY_PRESSURE_PLATE, HOLLY_PLANKS);
-        this.doorBlock(HOLLY_DOOR);
-        this.trapdoorBlock(HOLLY_TRAPDOOR);
-        this.buttonBlock(HOLLY_BUTTON, HOLLY_PLANKS);
-        this.signBlocks(HOLLY_SIGNS, HOLLY_PLANKS);
-        this.leavesBlocks(HOLLY_LEAVES, HOLLY_LEAF_PILE);
-        this.crossBlockWithPot(HOLLY_SAPLING, POTTED_HOLLY_SAPLING);
-        this.beehiveBlock(HOLLY_BEEHIVE);
-        this.ladderBlock(HOLLY_LADDER);
-        this.bookshelfBlock(HOLLY_BOOKSHELF, HOLLY_PLANKS);
+        this.slab(HOLLY_SLAB, this.blockTexture(HOLLY_PLANKS.get()));
+        this.stairs(HOLLY_STAIRS, this.blockTexture(HOLLY_PLANKS.get()));
+        this.fence(HOLLY_FENCE, this.blockTexture(HOLLY_PLANKS.get()));
+        this.fenceGate(HOLLY_FENCE_GATE, this.blockTexture(HOLLY_PLANKS.get()));
+        this.pressurePlate(HOLLY_PRESSURE_PLATE, this.blockTexture(HOLLY_PLANKS.get()));
+        this.doorCutout(HOLLY_DOOR);
+        this.trapdoor(HOLLY_TRAPDOOR);
+        this.button(HOLLY_BUTTON, this.blockTexture(HOLLY_PLANKS.get()));
+        this.signs(HOLLY_SIGNS, HOLLY_PLANKS);
+        this.leaves(HOLLY_LEAVES);
+        this.pottedPlant(HOLLY_SAPLING, POTTED_HOLLY_SAPLING);
+        this.beehive(HOLLY_BEEHIVE);
+        this.leafPile(HOLLY_LEAF_PILE, this.blockTexture(HOLLY_LEAVES.get()), false);
+        this.ladder(HOLLY_LADDER);
+        this.bookshelf(HOLLY_BOOKSHELF, HOLLY_PLANKS);
         this.chiseledBookshelfBlock(CHISELED_HOLLY_BOOKSHELF);
-        this.boardsBlock(HOLLY_BOARDS);
-        this.chestBlocks(HOLLY_CHEST, TRAPPED_HOLLY_CHEST, HOLLY_PLANKS);
-        this.directionalBlock(HOLLY_BERRY_BASKET);
+        this.boards(HOLLY_BOARDS);
+        this.chests(HOLLY_CHEST, TRAPPED_HOLLY_CHEST, this.blockTexture(HOLLY_PLANKS.get()));
+        this.compressedBlock(HOLLY_BERRY_BASKET);
         this.hangingSignBlocks(STRIPPED_HOLLY_LOG, HOLLY_HANGING_SIGNS);
 
         // chestnut
-        this.logBlocks(CHESTNUT_LOG, CHESTNUT_WOOD);
-        this.logBlocks(STRIPPED_CHESTNUT_LOG, STRIPPED_CHESTNUT_WOOD);
+        this.pillar(STRIPPED_CHESTNUT_LOG);
+        this.wood(STRIPPED_CHESTNUT_WOOD, this.blockTexture(STRIPPED_CHESTNUT_LOG.get()));
+        this.pillar(CHESTNUT_LOG);
+        this.wood(CHESTNUT_WOOD, this.blockTexture(CHESTNUT_LOG.get()));
         this.cubeAll(CHESTNUT_PLANKS);
-        this.slabBlock(CHESTNUT_SLAB, CHESTNUT_PLANKS);
-        this.stairsBlock(CHESTNUT_STAIRS, CHESTNUT_PLANKS);
-        this.fenceBlock(CHESTNUT_FENCE, CHESTNUT_PLANKS);
-        this.fenceGateBlock(CHESTNUT_FENCE_GATE, CHESTNUT_PLANKS);
-        this.pressurePlateBlock(CHESTNUT_PRESSURE_PLATE, CHESTNUT_PLANKS);
-        this.doorBlock(CHESTNUT_DOOR);
-        this.trapdoorBlock(CHESTNUT_TRAPDOOR);
-        this.buttonBlock(CHESTNUT_BUTTON, CHESTNUT_PLANKS);
-        this.signBlocks(CHESTNUT_SIGNS, CHESTNUT_PLANKS);
-        this.leavesBlocks(CHESTNUT_LEAVES, CHESTNUT_LEAF_PILE);
-        this.crossBlockWithPot(CHESTNUT_SAPLING, POTTED_CHESTNUT_SAPLING);
-        this.beehiveBlock(CHESTNUT_BEEHIVE);
-        this.ladderBlock(CHESTNUT_LADDER);
-        this.bookshelfBlock(CHESTNUT_BOOKSHELF, CHESTNUT_PLANKS);
+        this.slab(CHESTNUT_SLAB, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.stairs(CHESTNUT_STAIRS, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.fence(CHESTNUT_FENCE, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.fenceGate(CHESTNUT_FENCE_GATE, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.pressurePlate(CHESTNUT_PRESSURE_PLATE, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.door(CHESTNUT_DOOR);
+        this.trapdoor(CHESTNUT_TRAPDOOR);
+        this.button(CHESTNUT_BUTTON, this.blockTexture(CHESTNUT_PLANKS.get()));
+        this.signs(CHESTNUT_SIGNS, CHESTNUT_PLANKS);
+        this.leaves(CHESTNUT_LEAVES);
+        this.pottedPlant(CHESTNUT_SAPLING, POTTED_CHESTNUT_SAPLING);
+        this.beehive(CHESTNUT_BEEHIVE);
+        this.leafPile(CHESTNUT_LEAF_PILE, this.blockTexture(CHESTNUT_LEAVES.get()), true);
+        this.ladder(CHESTNUT_LADDER);
+        this.bookshelf(CHESTNUT_BOOKSHELF, CHESTNUT_PLANKS);
         this.chiseledBookshelfBlock(CHISELED_CHESTNUT_BOOKSHELF);
-        this.boardsBlock(CHESTNUT_BOARDS);
-        this.chestBlocks(CHESTNUT_CHEST, TRAPPED_CHESTNUT_CHEST, CHESTNUT_PLANKS);
+        this.boards(CHESTNUT_BOARDS);
+        this.chests(CHESTNUT_CHEST, TRAPPED_CHESTNUT_CHEST, this.blockTexture(CHESTNUT_PLANKS.get()));
         this.hangingSignBlocks(STRIPPED_CHESTNUT_LOG, CHESTNUT_HANGING_SIGNS);
 
         // pine
-        this.logBlocks(PINE_LOG, PINE_WOOD);
-        this.logBlocks(WEATHERED_PINE_LOG, WEATHERED_PINE_WOOD);
-        this.logBlocks(STRIPPED_PINE_LOG, STRIPPED_PINE_WOOD);
+        this.pillar(STRIPPED_PINE_LOG);
+        this.wood(STRIPPED_PINE_WOOD, this.blockTexture(STRIPPED_PINE_LOG.get()));
+        this.pillar(WEATHERED_PINE_LOG);
+        this.wood(WEATHERED_PINE_WOOD, this.blockTexture(WEATHERED_PINE_LOG.get()));
+        this.pillar(PINE_LOG);
+        this.wood(PINE_WOOD, this.blockTexture(PINE_LOG.get()));
         this.cubeAll(PINE_PLANKS);
-        this.slabBlock(PINE_SLAB, PINE_PLANKS);
-        this.stairsBlock(PINE_STAIRS, PINE_PLANKS);
-        this.fenceBlock(PINE_FENCE, PINE_PLANKS);
-        this.fenceGateBlock(PINE_FENCE_GATE, PINE_PLANKS);
-        this.pressurePlateBlock(PINE_PRESSURE_PLATE, PINE_PLANKS);
-        this.doorBlock(PINE_DOOR);
-        this.trapdoorBlock(PINE_TRAPDOOR);
-        this.buttonBlock(PINE_BUTTON, PINE_PLANKS);
-        this.signBlocks(PINE_SIGNS, PINE_PLANKS);
-        this.leavesBlocks(PINE_LEAVES, PINE_LEAF_PILE);
-        this.crossBlockWithPot(PINE_SAPLING, POTTED_PINE_SAPLING);
-        this.beehiveBlock(PINE_BEEHIVE);
-        this.ladderBlock(PINE_LADDER);
-        this.bookshelfBlock(PINE_BOOKSHELF, PINE_PLANKS);
+        this.slab(PINE_SLAB, this.blockTexture(PINE_PLANKS.get()));
+        this.stairs(PINE_STAIRS, this.blockTexture(PINE_PLANKS.get()));
+        this.fence(PINE_FENCE, this.blockTexture(PINE_PLANKS.get()));
+        this.fenceGate(PINE_FENCE_GATE, this.blockTexture(PINE_PLANKS.get()));
+        this.pressurePlate(PINE_PRESSURE_PLATE, this.blockTexture(PINE_PLANKS.get()));
+        this.doorCutout(PINE_DOOR);
+        this.trapdoorCutout(PINE_TRAPDOOR);
+        this.button(PINE_BUTTON, this.blockTexture(PINE_PLANKS.get()));
+        this.signs(PINE_SIGNS, PINE_PLANKS);
+        this.leaves(PINE_LEAVES);
+        this.pottedPlant(PINE_SAPLING, POTTED_PINE_SAPLING);
+        this.beehive(PINE_BEEHIVE);
+        this.leafPile(PINE_LEAF_PILE, this.blockTexture(PINE_LEAVES.get()), false);
+        this.ladder(PINE_LADDER);
+        this.bookshelf(PINE_BOOKSHELF, PINE_PLANKS);
         this.chiseledBookshelfBlock(CHISELED_PINE_BOOKSHELF);
-        this.boardsBlock(PINE_BOARDS);
-        this.chestBlocks(PINE_CHEST, TRAPPED_PINE_CHEST, PINE_PLANKS);
+        this.boards(PINE_BOARDS);
+        this.chests(PINE_CHEST, TRAPPED_PINE_CHEST, this.blockTexture(PINE_PLANKS.get()));
         this.hangingSignBlocks(STRIPPED_PINE_LOG, PINE_HANGING_SIGNS);
 
         // pinecone
@@ -188,116 +199,117 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.offFairyLight(REDSTONE_FAIRY_LIGHT);
 
         this.simpleBlock(PINECONE_JAM_BLOCK.get(), this.models().getExistingFile(this.modLoc("block/pinecone_jam_block")));
-        this.blockItem(PINECONE_JAM_BLOCK);
+        this.itemModel(PINECONE_JAM_BLOCK);
 
         this.horizontalBlock(ELDER_WING.get(), this.models().getExistingFile(this.modLoc("block/elder_wing")));
-        this.generatedItem(ELDER_WING, this.modLoc("block/elder_wing"));
-        this.crossBlock(ELDER_ORNAMENT);
-        this.generatedItem(ELDER_ORNAMENT, this.modLoc("block/elder_ornament"));
+        this.generatedItem(ELDER_WING.get(), TextureFolder.BLOCK);
+        this.simpleCross(ELDER_ORNAMENT);
+        this.generatedItem(ELDER_ORNAMENT.get(), TextureFolder.BLOCK);
         this.dreamCatcher(DREAM_CATCHER);
 
-        this.logBlocks(PINECONE_BLOCK);
+        this.pillar(PINECONE_BLOCK);
+        this.itemModel(PINECONE_BLOCK);
         this.horizontalBlock(CARVED_PINECONE_BLOCK.get(), this.models().orientable("carved_pinecone_block", this.modLoc("block/pinecone_block"), this.modLoc("block/carved_pinecone_block"), this.modLoc("block/pinecone_block_top")));
-        this.blockItem(CARVED_PINECONE_BLOCK);
+        this.itemModel(CARVED_PINECONE_BLOCK);
         this.horizontalBlock(WILL_O_THE_WISP.get(), this.models().orientable("will_o_the_wisp", this.modLoc("block/pinecone_block"), this.modLoc("block/will_o_the_wisp"), this.modLoc("block/pinecone_block_top")));
-        this.blockItem(WILL_O_THE_WISP);
+        this.itemModel(WILL_O_THE_WISP);
 
         // pinecone shingles
         this.cubeAll(PINECONE_SHINGLES);
-        this.stairsBlock(PINECONE_SHINGLE_STAIRS, PINECONE_SHINGLES);
-        this.slabBlock(PINECONE_SHINGLE_SLAB, PINECONE_SHINGLES);
+        this.stairs(PINECONE_SHINGLE_STAIRS, this.blockTexture(PINECONE_SHINGLES.get()));
+        this.slab(PINECONE_SHINGLE_SLAB, this.blockTexture(PINECONE_SHINGLES.get()));
 
         this.cubeAll(WHITE_PINECONE_SHINGLES);
-        this.stairsBlock(WHITE_PINECONE_SHINGLE_STAIRS, WHITE_PINECONE_SHINGLES);
-        this.slabBlock(WHITE_PINECONE_SHINGLE_SLAB, WHITE_PINECONE_SHINGLES);
+        this.stairs(WHITE_PINECONE_SHINGLE_STAIRS, this.blockTexture(WHITE_PINECONE_SHINGLES.get()));
+        this.slab(WHITE_PINECONE_SHINGLE_SLAB, this.blockTexture(WHITE_PINECONE_SHINGLES.get()));
         this.cubeAll(LIGHT_GRAY_PINECONE_SHINGLES);
-        this.stairsBlock(LIGHT_GRAY_PINECONE_SHINGLE_STAIRS, LIGHT_GRAY_PINECONE_SHINGLES);
-        this.slabBlock(LIGHT_GRAY_PINECONE_SHINGLE_SLAB, LIGHT_GRAY_PINECONE_SHINGLES);
+        this.stairs(LIGHT_GRAY_PINECONE_SHINGLE_STAIRS, this.blockTexture(LIGHT_GRAY_PINECONE_SHINGLES.get()));
+        this.slab(LIGHT_GRAY_PINECONE_SHINGLE_SLAB, this.blockTexture(LIGHT_GRAY_PINECONE_SHINGLES.get()));
         this.cubeAll(GRAY_PINECONE_SHINGLES);
-        this.stairsBlock(GRAY_PINECONE_SHINGLE_STAIRS, GRAY_PINECONE_SHINGLES);
-        this.slabBlock(GRAY_PINECONE_SHINGLE_SLAB, GRAY_PINECONE_SHINGLES);
+        this.stairs(GRAY_PINECONE_SHINGLE_STAIRS, this.blockTexture(GRAY_PINECONE_SHINGLES.get()));
+        this.slab(GRAY_PINECONE_SHINGLE_SLAB, this.blockTexture(GRAY_PINECONE_SHINGLES.get()));
         this.cubeAll(BLACK_PINECONE_SHINGLES);
-        this.stairsBlock(BLACK_PINECONE_SHINGLE_STAIRS, BLACK_PINECONE_SHINGLES);
-        this.slabBlock(BLACK_PINECONE_SHINGLE_SLAB, BLACK_PINECONE_SHINGLES);
+        this.stairs(BLACK_PINECONE_SHINGLE_STAIRS, this.blockTexture(BLACK_PINECONE_SHINGLES.get()));
+        this.slab(BLACK_PINECONE_SHINGLE_SLAB, this.blockTexture(BLACK_PINECONE_SHINGLES.get()));
         this.cubeAll(BROWN_PINECONE_SHINGLES);
-        this.stairsBlock(BROWN_PINECONE_SHINGLE_STAIRS, BROWN_PINECONE_SHINGLES);
-        this.slabBlock(BROWN_PINECONE_SHINGLE_SLAB, BROWN_PINECONE_SHINGLES);
+        this.stairs(BROWN_PINECONE_SHINGLE_STAIRS, this.blockTexture(BROWN_PINECONE_SHINGLES.get()));
+        this.slab(BROWN_PINECONE_SHINGLE_SLAB, this.blockTexture(BROWN_PINECONE_SHINGLES.get()));
         this.cubeAll(RED_PINECONE_SHINGLES);
-        this.stairsBlock(RED_PINECONE_SHINGLE_STAIRS, RED_PINECONE_SHINGLES);
-        this.slabBlock(RED_PINECONE_SHINGLE_SLAB, RED_PINECONE_SHINGLES);
+        this.stairs(RED_PINECONE_SHINGLE_STAIRS, this.blockTexture(RED_PINECONE_SHINGLES.get()));
+        this.slab(RED_PINECONE_SHINGLE_SLAB, this.blockTexture(RED_PINECONE_SHINGLES.get()));
         this.cubeAll(ORANGE_PINECONE_SHINGLES);
-        this.stairsBlock(ORANGE_PINECONE_SHINGLE_STAIRS, ORANGE_PINECONE_SHINGLES);
-        this.slabBlock(ORANGE_PINECONE_SHINGLE_SLAB, ORANGE_PINECONE_SHINGLES);
+        this.stairs(ORANGE_PINECONE_SHINGLE_STAIRS, this.blockTexture(ORANGE_PINECONE_SHINGLES.get()));
+        this.slab(ORANGE_PINECONE_SHINGLE_SLAB, this.blockTexture(ORANGE_PINECONE_SHINGLES.get()));
         this.cubeAll(YELLOW_PINECONE_SHINGLES);
-        this.stairsBlock(YELLOW_PINECONE_SHINGLE_STAIRS, YELLOW_PINECONE_SHINGLES);
-        this.slabBlock(YELLOW_PINECONE_SHINGLE_SLAB, YELLOW_PINECONE_SHINGLES);
+        this.stairs(YELLOW_PINECONE_SHINGLE_STAIRS, this.blockTexture(YELLOW_PINECONE_SHINGLES.get()));
+        this.slab(YELLOW_PINECONE_SHINGLE_SLAB, this.blockTexture(YELLOW_PINECONE_SHINGLES.get()));
         this.cubeAll(LIME_PINECONE_SHINGLES);
-        this.stairsBlock(LIME_PINECONE_SHINGLE_STAIRS, LIME_PINECONE_SHINGLES);
-        this.slabBlock(LIME_PINECONE_SHINGLE_SLAB, LIME_PINECONE_SHINGLES);
+        this.stairs(LIME_PINECONE_SHINGLE_STAIRS, this.blockTexture(LIME_PINECONE_SHINGLES.get()));
+        this.slab(LIME_PINECONE_SHINGLE_SLAB, this.blockTexture(LIME_PINECONE_SHINGLES.get()));
         this.cubeAll(GREEN_PINECONE_SHINGLES);
-        this.stairsBlock(GREEN_PINECONE_SHINGLE_STAIRS, GREEN_PINECONE_SHINGLES);
-        this.slabBlock(GREEN_PINECONE_SHINGLE_SLAB, GREEN_PINECONE_SHINGLES);
+        this.stairs(GREEN_PINECONE_SHINGLE_STAIRS, this.blockTexture(GREEN_PINECONE_SHINGLES.get()));
+        this.slab(GREEN_PINECONE_SHINGLE_SLAB, this.blockTexture(GREEN_PINECONE_SHINGLES.get()));
         this.cubeAll(CYAN_PINECONE_SHINGLES);
-        this.stairsBlock(CYAN_PINECONE_SHINGLE_STAIRS, CYAN_PINECONE_SHINGLES);
-        this.slabBlock(CYAN_PINECONE_SHINGLE_SLAB, CYAN_PINECONE_SHINGLES);
+        this.stairs(CYAN_PINECONE_SHINGLE_STAIRS, this.blockTexture(CYAN_PINECONE_SHINGLES.get()));
+        this.slab(CYAN_PINECONE_SHINGLE_SLAB, this.blockTexture(CYAN_PINECONE_SHINGLES.get()));
         this.cubeAll(LIGHT_BLUE_PINECONE_SHINGLES);
-        this.stairsBlock(LIGHT_BLUE_PINECONE_SHINGLE_STAIRS, LIGHT_BLUE_PINECONE_SHINGLES);
-        this.slabBlock(LIGHT_BLUE_PINECONE_SHINGLE_SLAB, LIGHT_BLUE_PINECONE_SHINGLES);
+        this.stairs(LIGHT_BLUE_PINECONE_SHINGLE_STAIRS, this.blockTexture(LIGHT_BLUE_PINECONE_SHINGLES.get()));
+        this.slab(LIGHT_BLUE_PINECONE_SHINGLE_SLAB, this.blockTexture(LIGHT_BLUE_PINECONE_SHINGLES.get()));
         this.cubeAll(BLUE_PINECONE_SHINGLES);
-        this.stairsBlock(BLUE_PINECONE_SHINGLE_STAIRS, BLUE_PINECONE_SHINGLES);
-        this.slabBlock(BLUE_PINECONE_SHINGLE_SLAB, BLUE_PINECONE_SHINGLES);
+        this.stairs(BLUE_PINECONE_SHINGLE_STAIRS, this.blockTexture(BLUE_PINECONE_SHINGLES.get()));
+        this.slab(BLUE_PINECONE_SHINGLE_SLAB, this.blockTexture(BLUE_PINECONE_SHINGLES.get()));
         this.cubeAll(PURPLE_PINECONE_SHINGLES);
-        this.stairsBlock(PURPLE_PINECONE_SHINGLE_STAIRS, PURPLE_PINECONE_SHINGLES);
-        this.slabBlock(PURPLE_PINECONE_SHINGLE_SLAB, PURPLE_PINECONE_SHINGLES);
+        this.stairs(PURPLE_PINECONE_SHINGLE_STAIRS, this.blockTexture(PURPLE_PINECONE_SHINGLES.get()));
+        this.slab(PURPLE_PINECONE_SHINGLE_SLAB, this.blockTexture(PURPLE_PINECONE_SHINGLES.get()));
         this.cubeAll(MAGENTA_PINECONE_SHINGLES);
-        this.stairsBlock(MAGENTA_PINECONE_SHINGLE_STAIRS, MAGENTA_PINECONE_SHINGLES);
-        this.slabBlock(MAGENTA_PINECONE_SHINGLE_SLAB, MAGENTA_PINECONE_SHINGLES);
+        this.stairs(MAGENTA_PINECONE_SHINGLE_STAIRS, this.blockTexture(MAGENTA_PINECONE_SHINGLES.get()));
+        this.slab(MAGENTA_PINECONE_SHINGLE_SLAB, this.blockTexture(MAGENTA_PINECONE_SHINGLES.get()));
         this.cubeAll(PINK_PINECONE_SHINGLES);
-        this.stairsBlock(PINK_PINECONE_SHINGLE_STAIRS, PINK_PINECONE_SHINGLES);
-        this.slabBlock(PINK_PINECONE_SHINGLE_SLAB, PINK_PINECONE_SHINGLES);
+        this.stairs(PINK_PINECONE_SHINGLE_STAIRS, this.blockTexture(PINK_PINECONE_SHINGLES.get()));
+        this.slab(PINK_PINECONE_SHINGLE_SLAB, this.blockTexture(PINK_PINECONE_SHINGLES.get()));
 
         // snow
-        this.stairsBlock(SNOW_STAIRS, this.mcLoc("block/snow"));
-        this.slabBlock(SNOW_SLAB, this.mcLoc("block/snow"), this.mcLoc("block/snow"));
+        this.stairs(SNOW_STAIRS, this.mcLoc("block/snow"));
+        this.slab(SNOW_SLAB, this.mcLoc("block/snow_block"), this.mcLoc("block/snow"));
         this.cubeAll(SNOW_BRICKS);
-        this.stairsBlock(SNOW_BRICK_STAIRS, SNOW_BRICKS);
-        this.slabBlock(SNOW_BRICK_SLAB, SNOW_BRICKS);
-        this.wallBlock(SNOW_BRICK_WALL, SNOW_BRICKS);
-        this.brushableBlock(SUSPICIOUS_SNOW);
+        this.stairs(SNOW_BRICK_STAIRS, this.blockTexture(SNOW_BRICKS.get()));
+        this.slab(SNOW_BRICK_SLAB, this.blockTexture(SNOW_BRICKS.get()));
+        this.wall(SNOW_BRICK_WALL, this.blockTexture(SNOW_BRICKS.get()));
+        this.suspiciousBlock(SUSPICIOUS_SNOW);
 
         // packed ice
-        this.stairsBlock(PACKED_ICE_STAIRS, this.mcLoc("block/packed_ice"));
-        this.slabBlock(PACKED_ICE_SLAB, this.mcLoc("block/packed_ice"));
+        this.stairs(PACKED_ICE_STAIRS, this.blockTexture(Blocks.PACKED_ICE));
+        this.slab(PACKED_ICE_SLAB, this.blockTexture(Blocks.PACKED_ICE));
         this.cubeAll(PACKED_ICE_BRICKS);
         this.cubeAll(CHISELED_PACKED_ICE_BRICKS);
-        this.stairsBlock(PACKED_ICE_BRICK_STAIRS, PACKED_ICE_BRICKS);
-        this.slabBlock(PACKED_ICE_BRICK_SLAB, PACKED_ICE_BRICKS);
-        this.wallBlock(PACKED_ICE_BRICK_WALL, PACKED_ICE_BRICKS);
+        this.stairs(PACKED_ICE_BRICK_STAIRS, this.blockTexture(PACKED_ICE_BRICKS.get()));
+        this.slab(PACKED_ICE_BRICK_SLAB, this.blockTexture(PACKED_ICE_BRICKS.get()));
+        this.wall(PACKED_ICE_BRICK_WALL, this.blockTexture(PACKED_ICE_BRICKS.get()));
 
         // blue ice
-        this.stairsBlock(BLUE_ICE_STAIRS, this.mcLoc("block/blue_ice"));
-        this.slabBlock(BLUE_ICE_SLAB, this.mcLoc("block/blue_ice"));
+        this.stairs(BLUE_ICE_STAIRS, this.blockTexture(Blocks.BLUE_ICE));
+        this.slab(BLUE_ICE_SLAB, this.blockTexture(Blocks.BLUE_ICE));
         this.cubeAll(BLUE_ICE_BRICKS);
         this.cubeAll(CHISELED_BLUE_ICE_BRICKS);
-        this.stairsBlock(BLUE_ICE_BRICK_STAIRS, BLUE_ICE_BRICKS);
-        this.slabBlock(BLUE_ICE_BRICK_SLAB, BLUE_ICE_BRICKS);
-        this.wallBlock(BLUE_ICE_BRICK_WALL, BLUE_ICE_BRICKS);
+        this.stairs(BLUE_ICE_BRICK_STAIRS, this.blockTexture(BLUE_ICE_BRICKS.get()));
+        this.slab(BLUE_ICE_BRICK_SLAB, this.blockTexture(BLUE_ICE_BRICKS.get()));
+        this.wall(BLUE_ICE_BRICK_WALL, this.blockTexture(BLUE_ICE_BRICKS.get()));
 
         // shale
         this.cubeAll(SHALE);
-        this.stairsBlock(SHALE_STAIRS, SHALE);
-        this.slabBlock(SHALE_SLAB, SHALE);
-        this.wallBlock(SHALE_WALL, SHALE);
+        this.stairs(SHALE_STAIRS, this.blockTexture(SHALE.get()));
+        this.slab(SHALE_SLAB, this.blockTexture(SHALE.get()));
+        this.wall(SHALE_WALL, this.blockTexture(SHALE.get()));
         this.cubeAll(POLISHED_SHALE);
-        this.stairsBlock(POLISHED_SHALE_STAIRS, POLISHED_SHALE);
-        this.slabBlock(POLISHED_SHALE_SLAB, POLISHED_SHALE);
-        this.wallBlock(POLISHED_SHALE_WALL, POLISHED_SHALE);
+        this.stairs(POLISHED_SHALE_STAIRS, this.blockTexture(POLISHED_SHALE.get()));
+        this.slab(POLISHED_SHALE_SLAB, this.blockTexture(POLISHED_SHALE.get()));
+        this.wall(POLISHED_SHALE_WALL, this.blockTexture(POLISHED_SHALE.get()));
         this.cubeAll(POLISHED_SHALE_BRICKS);
         this.cubeAll(ICY_POLISHED_SHALE_BRICKS);
         this.cubeAll(CHISELED_POLISHED_SHALE_BRICKS);
-        this.stairsBlock(POLISHED_SHALE_BRICK_STAIRS, POLISHED_SHALE_BRICKS);
-        this.slabBlock(POLISHED_SHALE_BRICK_SLAB, POLISHED_SHALE_BRICKS);
-        this.wallBlock(POLISHED_SHALE_BRICK_WALL, POLISHED_SHALE_BRICKS);
+        this.stairs(POLISHED_SHALE_BRICK_STAIRS, this.blockTexture(POLISHED_SHALE_BRICKS.get()));
+        this.slab(POLISHED_SHALE_BRICK_SLAB, this.blockTexture(POLISHED_SHALE_BRICKS.get()));
+        this.wall(POLISHED_SHALE_BRICK_WALL, this.blockTexture(POLISHED_SHALE_BRICKS.get()));
 
         // decorations
         this.wreath(HOLLY_WREATH);
@@ -305,44 +317,47 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.wreath(VINE_WREATH);
         this.wreath(CHERRY_WREATH);
 
-        MultiPartBlockStateBuilder puddingBuilder = this.getMultipartBuilder(CHRISTMAS_PUDDING.get());
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_4"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FOUR).end();
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_3"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.THREE).end();
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_2"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.TWO).end();
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_1"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.ONE).end();
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_4"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FIRE).end();
-        puddingBuilder.part().modelFile(this.models().getExistingFile(this.modLoc("block/christmas_pudding_fire"))).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FIRE).end();
+        MultiPartBlockStateBuilder builder = this.getMultipartBuilder(CHRISTMAS_PUDDING.get());
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_4"), this.models().existingFileHelper)).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FOUR);
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_3"), this.models().existingFileHelper)).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.THREE);
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_2"), this.models().existingFileHelper)).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.TWO);
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_1"), this.models().existingFileHelper)).addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.ONE);
 
-        this.generatedItem(CHRISTMAS_PUDDING);
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_4"), this.models().existingFileHelper))
+                .addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FIRE);
+        builder.part().modelFile(new ModelFile.ExistingModelFile(this.modLoc("block/christmas_pudding_fire"), this.models().existingFileHelper))
+                .addModel().condition(ChristmasPuddingBlock.STATE, ChristmasPuddingBlock.PuddingStates.FIRE).end();
+
+        this.generatedItem(CHRISTMAS_PUDDING.get(), TextureFolder.ITEM);
         this.horizontalBlock(FROSTBITER_TROPHY.get(), this.models().getExistingFile(this.modLoc("block/frostbiter_trophy")));
-        this.generatedItem(FROSTBITER_TROPHY, this.modLoc("block/frostbiter_trophy"));
-        this.paneBlock((IronBarsBlock) ICE_SHEET.get(), this.mcLoc("block/ice"), this.mcLoc("block/ice"));
+        this.generatedItem(FROSTBITER_TROPHY.get(), TextureFolder.ITEM);
+        this.iceSheet(ICE_SHEET, this.blockTexture(Blocks.ICE));
 
         // sprouts
-        this.crossBlockWithPot(SNOWY_SPROUTS, POTTED_SNOWY_SPROUTS);
-        this.crossBlockWithPot(GELISOL_GRASS, POTTED_GELISOL_GRASS);
-        this.crossBlockWithPot(DRY_MOSSY_SPROUTS, POTTED_DRY_MOSSY_SPROUTS);
-        this.crossBlockWithPot(MOSSY_SPROUTS, POTTED_MOSSY_SPROUTS);
+        this.pottedPlantWithPottedVariant(SNOWY_SPROUTS, POTTED_SNOWY_SPROUTS, TextureFolder.ITEM);
+        this.pottedPlantWithPottedVariant(GELISOL_GRASS, POTTED_GELISOL_GRASS, TextureFolder.BLOCK);
+        this.pottedPlantWithPottedVariant(DRY_MOSSY_SPROUTS, POTTED_DRY_MOSSY_SPROUTS, TextureFolder.ITEM);
+        this.pottedPlantWithPottedVariant(MOSSY_SPROUTS, POTTED_MOSSY_SPROUTS, TextureFolder.ITEM);
 
         // flowers
-        this.doublePlantBlock(RED_ROSE_BUSH);
-        this.doublePlantBlock(BLUE_ROSE_BUSH);
-        this.doublePlantBlock(WHITE_ROSE_BUSH);
-        this.doublePlantBlock(YELLOW_ROSE_BUSH);
-        this.doublePlantBlock(LUPINE);
-        this.doublePlantBlock(LIONS_TAIL);
+        this.tallPlant(RED_ROSE_BUSH);
+        this.tallPlant(BLUE_ROSE_BUSH);
+        this.tallPlant(WHITE_ROSE_BUSH);
+        this.tallPlant(YELLOW_ROSE_BUSH);
+        this.tallPlant(LUPINE);
+        this.tallPlant(LIONS_TAIL);
 
-        this.crossBlockWithPot(RED_ROSE, POTTED_RED_ROSE);
-        this.crossBlockWithPot(BLUE_ROSE, POTTED_BLUE_ROSE);
-        this.crossBlockWithPot(WHITE_ROSE, POTTED_WHITE_ROSE);
-        this.crossBlockWithPot(YELLOW_ROSE, POTTED_YELLOW_ROSE);
-        this.crossBlockWithPot(FOXGLOVE, POTTED_FOXGLOVE);
-        this.crossBlockWithPot(NIGHTSHADE, POTTED_NIGHTSHADE);
-        this.crossBlockWithPot(SNOWDROP, POTTED_SNOWDROP);
-        this.crossBlockWithPot(MOSS_CAMPION, POTTED_MOSS_CAMPION);
-        this.crossBlockWithPot(WILD_GINGER, POTTED_WILD_GINGER);
-        this.crossBlockWithPot(BLUEBELLS, POTTED_BLUEBELLS);
-        this.crossBlockWithPot(MIMOSA, POTTED_MIMOSA);
+        this.pottedPlant(RED_ROSE, POTTED_RED_ROSE);
+        this.pottedPlant(BLUE_ROSE, POTTED_BLUE_ROSE);
+        this.pottedPlant(WHITE_ROSE, POTTED_WHITE_ROSE);
+        this.pottedPlant(YELLOW_ROSE, POTTED_YELLOW_ROSE);
+        this.pottedPlant(FOXGLOVE, POTTED_FOXGLOVE);
+        this.pottedPlant(NIGHTSHADE, POTTED_NIGHTSHADE);
+        this.pottedPlantWithPottedVariant(SNOWDROP, POTTED_SNOWDROP, TextureFolder.BLOCK);
+        this.pottedPlantWithPottedVariant(MOSS_CAMPION, POTTED_MOSS_CAMPION, TextureFolder.BLOCK);
+        this.pottedPlantWithPottedVariant(WILD_GINGER, POTTED_WILD_GINGER, TextureFolder.BLOCK);
+        this.pottedPlantWithPottedVariant(BLUEBELLS, POTTED_BLUEBELLS, TextureFolder.BLOCK);
+        this.pottedPlantWithPottedVariant(MIMOSA, POTTED_MIMOSA, TextureFolder.ITEM);
 
         // lavender
         this.getVariantBuilder(LAVENDER.get())
@@ -350,15 +365,18 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
                 .partialState().with(LavenderBlock.AGE, 1).addModels(new ConfiguredModel(this.models().cross("lavender_stage1", this.modLoc("block/lavender_stage1")).renderType("cutout")))
                 .partialState().with(LavenderBlock.AGE, 2).addModels(new ConfiguredModel(this.models().cross("lavender_stage2", this.modLoc("block/lavender_stage2")).renderType("cutout")));
 
-        this.generatedItem(LAVENDER);
-        this.potBlock(POTTED_LAVENDER, this.modLoc("block/potted_lavender"));
+        this.generatedItem(LAVENDER.get(), TextureFolder.ITEM);
+        this.pot(POTTED_LAVENDER, this.modLoc("block/potted_lavender"));
 
         this.compressedBlock(LAVENDER_BALE);
-        this.thatchBlock(LAVENDER_THATCH, LAVENDER_THATCH_STAIRS, LAVENDER_THATCH_SLAB);
+        this.thatch(LAVENDER_THATCH);
+        this.thatchStairs(LAVENDER_THATCH_STAIRS, this.blockTexture(LAVENDER_THATCH.get()));
+        this.thatchSlab(LAVENDER_THATCH_SLAB, this.blockTexture(LAVENDER_THATCH.get()));
 
         // acacia
-        this.crossBlockWithPot(FLOWERING_ACACIA_SAPLING, POTTED_FLOWERING_ACACIA_SAPLING);
-        this.leavesBlocks(FLOWERING_ACACIA_LEAVES, FLOWERING_ACACIA_LEAF_PILE);
+        this.pottedPlant(FLOWERING_ACACIA_SAPLING, POTTED_FLOWERING_ACACIA_SAPLING);
+        this.overlayLeaves(FLOWERING_ACACIA_LEAVES);
+        this.overlayLeafPile(FLOWERING_ACACIA_LEAF_PILE, this.blockTexture(FLOWERING_ACACIA_LEAVES.get()));
         this.petals(YELLOW_PETALS);
 
         // wild berry blocks
@@ -366,7 +384,7 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.compressedBlock(WILD_BERRY_BASKET);
 
         // candy cane
-        this.logBlocks(CANDY_CANE_BLOCK);
+        this.pillar(CANDY_CANE_BLOCK);
 
         // icicles
         this.getVariantBuilder(ICICLES.get())
@@ -374,12 +392,12 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
                 .partialState().with(IciclesBlock.STATE, IciclesBlock.IcicleStates.TOP).addModels(new ConfiguredModel(this.models().cross("icicles_top", this.modLoc("block/icicles_top")).renderType("cutout")))
                 .partialState().with(IciclesBlock.STATE, IciclesBlock.IcicleStates.BOTTOM).addModels(new ConfiguredModel(this.models().cross("icicles_bottom", this.modLoc("block/icicles_bottom")).renderType("cutout")))
                 .partialState().with(IciclesBlock.STATE, IciclesBlock.IcicleStates.FLOOR).addModels(new ConfiguredModel(this.models().cross("icicles_floor", this.modLoc("block/icicles_floor")).renderType("cutout")));
-        this.generatedItem(ICICLES);
-        this.logBlocks(ICICLE_BLOCK);
-        this.logBlocks(CHISELED_ICICLE_BLOCK);
-        this.doorBlock(ICICLE_DOOR);
-        this.trapdoorBlock(ICICLE_TRAPDOOR);
-        this.paneBlock((IronBarsBlock) ICICLE_BARS.get(), this.mcLoc("block/packed_ice"), this.mcLoc("block/packed_ice"));
+        this.generatedItem(ICICLES.get(), TextureFolder.ITEM);
+        this.pillar(ICICLE_BLOCK);
+        this.pillar(CHISELED_ICICLE_BLOCK);
+        this.doorCutout(ICICLE_DOOR);
+        this.trapdoorCutout(ICICLE_TRAPDOOR);
+        this.bars(ICICLE_BARS);
         this.getVariantBuilder(ICE_LANTERN.get())
                 .partialState().with(IceLanternBlock.FACING, Direction.UP).addModels(new ConfiguredModel(this.models().getExistingFile(this.modLoc("block/ice_lantern"))))
                 .partialState().with(IceLanternBlock.FACING, Direction.DOWN).addModels(new ConfiguredModel(this.models().getExistingFile(this.modLoc("block/ice_lantern_hanging"))))
@@ -387,8 +405,8 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
                 .partialState().with(IceLanternBlock.FACING, Direction.SOUTH).addModels(ConfiguredModel.builder().modelFile(this.models().getExistingFile(this.modLoc("block/ice_lantern_side"))).rotationY(180).build())
                 .partialState().with(IceLanternBlock.FACING, Direction.EAST).addModels(ConfiguredModel.builder().modelFile(this.models().getExistingFile(this.modLoc("block/ice_lantern_side"))).rotationY(90).build())
                 .partialState().with(IceLanternBlock.FACING, Direction.WEST).addModels(ConfiguredModel.builder().modelFile(this.models().getExistingFile(this.modLoc("block/ice_lantern_side"))).rotationY(270).build());
-        this.generatedItem(ICE_LANTERN);
-        this.simpleBlock(ICE_CHAIN.get(), this.models().getExistingFile(this.mcLoc("block/chain")));
+        this.generatedItem(ICE_LANTERN.get(), TextureFolder.ITEM);
+        this.chain(ICE_CHAIN);
 
         // lunalite
         this.getVariantBuilder(LUNALITE.get())
@@ -397,10 +415,10 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.simpleBlock(CUT_LUNALITE.get(), this.models().cubeBottomTop("cut_lunalite", this.modLoc("block/cut_lunalite"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top")));
         this.simpleBlock(CUT_LUNALITE_BRICKS.get(), this.models().cubeBottomTop("cut_lunalite_bricks", this.modLoc("block/cut_lunalite_bricks"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top")));
         this.simpleBlock(CHISELED_CUT_LUNALITE_BRICKS.get(), this.models().cubeBottomTop("chiseled_cut_lunalite_bricks", this.modLoc("block/chiseled_cut_lunalite_bricks"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top")));
-        this.blockItem(LUNALITE);
-        this.blockItem(CUT_LUNALITE);
-        this.blockItem(CUT_LUNALITE_BRICKS);
-        this.blockItem(CHISELED_CUT_LUNALITE_BRICKS);
+        this.itemModel(LUNALITE);
+        this.itemModel(CUT_LUNALITE);
+        this.itemModel(CUT_LUNALITE_BRICKS);
+        this.itemModel(CHISELED_CUT_LUNALITE_BRICKS);
 
         this.getVariantBuilder(LUNALITE_SLAB.get())
                 .partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).with(LunaliteSlabBlock.TOP, true).addModels(new ConfiguredModel(this.models().slab("lunalite_slab", this.modLoc("block/lunalite_slab"), this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_top"))))
@@ -409,26 +427,27 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
                 .partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).with(LunaliteSlabBlock.TOP, false).addModels(new ConfiguredModel(this.models().slab("lunalite_slab_bottom", this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_bottom"))))
                 .partialState().with(SlabBlock.TYPE, SlabType.TOP).with(LunaliteSlabBlock.TOP, false).addModels(new ConfiguredModel(this.models().slabTop("lunalite_slab_top_bottom", this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_bottom"))))
                 .partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).with(LunaliteSlabBlock.TOP, false).addModels(new ConfiguredModel(this.models().getExistingFile(this.modLoc("block/lunalite_bottom"))));
+        this.models().cubeBottomTop("cut_lunalite_slab_double", this.modLoc("block/cut_lunalite_slab"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
+        this.slab(CUT_LUNALITE_SLAB, this.modLoc("block/cut_lunalite_slab_double"), this.modLoc("block/cut_lunalite_slab"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
+        this.slab(CUT_LUNALITE_BRICK_SLAB, this.blockTexture(CUT_LUNALITE_BRICKS.get()), this.modLoc("block/cut_lunalite_bricks"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
+        this.itemModel(LUNALITE_SLAB);
 
-        this.slabBlock(CUT_LUNALITE_SLAB, CUT_LUNALITE);
-        this.slabBlock(CUT_LUNALITE_BRICK_SLAB, CUT_LUNALITE_BRICKS);
-        this.blockItem(LUNALITE_SLAB);
+        this.stairsInversion(LUNALITE_STAIRS, this.blockTexture(LUNALITE.get()), this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_top"));
+        this.stairsInversion(CUT_LUNALITE_STAIRS, this.blockTexture(CUT_LUNALITE.get()), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
+        this.stairsInversion(CUT_LUNALITE_BRICK_STAIRS, this.blockTexture(CUT_LUNALITE_BRICKS.get()), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
 
-        this.stairsBlock(LUNALITE_STAIRS, LUNALITE);
-        this.stairsBlock(CUT_LUNALITE_STAIRS, CUT_LUNALITE);
-        this.stairsBlock(CUT_LUNALITE_BRICK_STAIRS, CUT_LUNALITE_BRICKS);
-
-        this.wallBlock(LUNALITE_WALL, LUNALITE);
-        this.wallBlock(CUT_LUNALITE_WALL, CUT_LUNALITE);
-        this.wallBlock(CUT_LUNALITE_BRICK_WALL, CUT_LUNALITE_BRICKS);
+        this.wall(LUNALITE_WALL, this.blockTexture(LUNALITE.get()), this.modLoc("block/lunalite_bottom"), this.modLoc("block/lunalite_top"));
+        this.wall(CUT_LUNALITE_WALL, this.blockTexture(CUT_LUNALITE.get()), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
+        this.wall(CUT_LUNALITE_BRICK_WALL, this.blockTexture(CUT_LUNALITE_BRICKS.get()), this.modLoc("block/smooth_lunalite"), this.modLoc("block/lunalite_top"));
 
         this.cubeAll(SMOOTH_LUNALITE);
-        this.stairsBlock(SMOOTH_LUNALITE_STAIRS, SMOOTH_LUNALITE);
-        this.slabBlock(SMOOTH_LUNALITE_SLAB, SMOOTH_LUNALITE);
+        this.stairs(SMOOTH_LUNALITE_STAIRS, this.blockTexture(SMOOTH_LUNALITE.get()));
+        this.models().cubeBottomTop("smooth_lunalite_slab_double", this.modLoc("block/smooth_lunalite_slab"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/smooth_lunalite"));
+        this.slab(SMOOTH_LUNALITE_SLAB, this.modLoc("block/smooth_lunalite_slab_double"), this.modLoc("block/smooth_lunalite_slab"), this.modLoc("block/smooth_lunalite"), this.modLoc("block/smooth_lunalite"));
 
         // ginger
-        this.doorBlock(GINGERBREAD_DOOR);
-        this.trapdoorBlock(GINGERBREAD_TRAPDOOR);
+        this.doorCutout(GINGERBREAD_DOOR);
+        this.trapdoorCutout(GINGERBREAD_TRAPDOOR);
         this.getVariantBuilder(GINGER.get())
                 .partialState().with(GingerCropBlock.AGE, 0).addModels(new ConfiguredModel(this.models().crop("ginger_stage0", this.modLoc("block/ginger_stage0")).renderType("cutout")))
                 .partialState().with(GingerCropBlock.AGE, 1).addModels(new ConfiguredModel(this.models().crop("ginger_stage1", this.modLoc("block/ginger_stage1")).renderType("cutout")))
@@ -438,38 +457,41 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.cubeAll(GINGER_SOIL);
         this.cubeAll(GINGERBREAD_BLOCK);
         this.cubeAll(GINGERBREAD_BRICKS);
-        this.stairsBlock(GINGERBREAD_BRICK_STAIRS, GINGERBREAD_BRICKS);
-        this.slabBlock(GINGERBREAD_BRICK_SLAB, GINGERBREAD_BRICKS);
-        this.wallBlock(GINGERBREAD_BRICK_WALL, GINGERBREAD_BRICKS);
+        this.stairs(GINGERBREAD_BRICK_STAIRS, this.blockTexture(GINGERBREAD_BRICKS.get()));
+        this.slab(GINGERBREAD_BRICK_SLAB, this.blockTexture(GINGERBREAD_BRICKS.get()));
+        this.wall(GINGERBREAD_BRICK_WALL, this.blockTexture(GINGERBREAD_BRICKS.get()));
 
-        this.cubeTopBlock(GLAZED_GINGERBREAD_BLOCK, this.modLoc("block/glazed_gingerbread_top"));
+        this.simpleBlock(GLAZED_GINGERBREAD_BLOCK.get(), this.models().cubeTop("glazed_gingerbread_block", this.blockTexture(GLAZED_GINGERBREAD_BLOCK.get()), this.modLoc("block/glazed_gingerbread_top")));
         this.cubeAll(GINGERBREAD_COOKIE_BLOCK);
-        this.cubeTopBlock(GLAZED_GINGERBREAD_BRICKS, this.modLoc("block/glazed_gingerbread_top"));
-        this.stairsBlock(GLAZED_GINGERBREAD_BRICK_STAIRS, GLAZED_GINGERBREAD_BRICKS);
-        this.slabBlock(GLAZED_GINGERBREAD_BRICK_SLAB, GLAZED_GINGERBREAD_BRICKS);
-        this.wallBlock(GLAZED_GINGERBREAD_BRICK_WALL, GLAZED_GINGERBREAD_BRICKS);
+        this.simpleBlock(GLAZED_GINGERBREAD_BRICKS.get(), this.models().cubeTop("glazed_gingerbread_bricks", this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.modLoc("block/glazed_gingerbread_top")));
+        this.stairsInversion(GLAZED_GINGERBREAD_BRICK_STAIRS, this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.modLoc("block/glazed_gingerbread_top"));
+        this.slab(GLAZED_GINGERBREAD_BRICK_SLAB, this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.modLoc("block/glazed_gingerbread_top"));
+        this.wall(GLAZED_GINGERBREAD_BRICK_WALL, this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.blockTexture(GLAZED_GINGERBREAD_BRICKS.get()), this.modLoc("block/glazed_gingerbread_top"));
+
+        this.itemModel(GLAZED_GINGERBREAD_BLOCK);
+        this.itemModel(GLAZED_GINGERBREAD_BRICKS);
 
         this.compressedBlock(GINGER_ROOT_CRATE);
 
         // dry moss
-        this.carpetBlock(DRY_MOSS_CARPET, DRY_MOSS_BLOCK);
+        this.carpet(DRY_MOSS_CARPET, this.blockTexture(DRY_MOSS_BLOCK.get()));
         this.cubeAll(DRY_MOSS_BLOCK);
         this.cubeAll(DRY_MOSSY_COBBLESTONE);
-        this.stairsBlock(DRY_MOSSY_COBBLESTONE_STAIRS, DRY_MOSSY_COBBLESTONE);
-        this.slabBlock(DRY_MOSSY_COBBLESTONE_SLAB, DRY_MOSSY_COBBLESTONE);
-        this.wallBlock(DRY_MOSSY_COBBLESTONE_WALL, DRY_MOSSY_COBBLESTONE);
+        this.stairs(DRY_MOSSY_COBBLESTONE_STAIRS, this.blockTexture(DRY_MOSSY_COBBLESTONE.get()));
+        this.slab(DRY_MOSSY_COBBLESTONE_SLAB, this.blockTexture(DRY_MOSSY_COBBLESTONE.get()));
+        this.wall(DRY_MOSSY_COBBLESTONE_WALL, this.blockTexture(DRY_MOSSY_COBBLESTONE.get()));
         this.cubeAll(DRY_MOSSY_STONE_BRICKS);
-        this.stairsBlock(DRY_MOSSY_STONE_BRICK_STAIRS, DRY_MOSSY_STONE_BRICKS);
-        this.slabBlock(DRY_MOSSY_STONE_BRICK_SLAB, DRY_MOSSY_STONE_BRICKS);
-        this.wallBlock(DRY_MOSSY_STONE_BRICK_WALL, DRY_MOSSY_STONE_BRICKS);
+        this.stairs(DRY_MOSSY_STONE_BRICK_STAIRS, this.blockTexture(DRY_MOSSY_STONE_BRICKS.get()));
+        this.slab(DRY_MOSSY_STONE_BRICK_SLAB, this.blockTexture(DRY_MOSSY_STONE_BRICKS.get()));
+        this.wall(DRY_MOSSY_STONE_BRICK_WALL, this.blockTexture(DRY_MOSSY_STONE_BRICKS.get()));
         this.cubeAll(DRY_MOSSY_COBBLESTONE_BRICKS);
-        this.stairsBlock(DRY_MOSSY_COBBLESTONE_BRICK_STAIRS, DRY_MOSSY_COBBLESTONE_BRICKS);
-        this.slabBlock(DRY_MOSSY_COBBLESTONE_BRICK_SLAB, DRY_MOSSY_COBBLESTONE_BRICKS);
-        this.wallBlock(DRY_MOSSY_COBBLESTONE_BRICK_WALL, DRY_MOSSY_COBBLESTONE_BRICKS);
+        this.stairs(DRY_MOSSY_COBBLESTONE_BRICK_STAIRS, this.blockTexture(DRY_MOSSY_COBBLESTONE_BRICKS.get()));
+        this.slab(DRY_MOSSY_COBBLESTONE_BRICK_SLAB, this.blockTexture(DRY_MOSSY_COBBLESTONE_BRICKS.get()));
+        this.wall(DRY_MOSSY_COBBLESTONE_BRICK_WALL, this.blockTexture(DRY_MOSSY_COBBLESTONE_BRICKS.get()));
         this.cubeAll(DRY_MOSSY_COBBLESTONE_TILES);
-        this.stairsBlock(DRY_MOSSY_COBBLESTONE_TILE_STAIRS, DRY_MOSSY_COBBLESTONE_TILES);
-        this.slabBlock(DRY_MOSSY_COBBLESTONE_TILE_SLAB, DRY_MOSSY_COBBLESTONE_TILES);
-        this.wallBlock(DRY_MOSSY_COBBLESTONE_TILE_WALL, DRY_MOSSY_COBBLESTONE_TILES);
+        this.stairs(DRY_MOSSY_COBBLESTONE_TILE_STAIRS, this.blockTexture(DRY_MOSSY_COBBLESTONE_TILES.get()));
+        this.slab(DRY_MOSSY_COBBLESTONE_TILE_SLAB, this.blockTexture(DRY_MOSSY_COBBLESTONE_TILES.get()));
+        this.wall(DRY_MOSSY_COBBLESTONE_TILE_WALL, this.blockTexture(DRY_MOSSY_COBBLESTONE_TILES.get()));
 
         // compressed blocks
         this.cubeAll(FROZEN_FLESH_BLOCK);
@@ -480,20 +502,57 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
         this.getVariantBuilder(GELISOL.get())
                 .partialState().with(SnowyDirtBlock.SNOWY, false).addModels(new ConfiguredModel(this.models().cubeBottomTop("gelisol", this.modLoc("block/gelisol_side"), this.mcLoc("block/dirt"), this.modLoc("block/gelisol_top"))))
                 .partialState().with(SnowyDirtBlock.SNOWY, true).addModels(new ConfiguredModel(this.models().cubeBottomTop("gelisol_snowy", this.modLoc("block/gelisol_side_snowy"), this.mcLoc("block/dirt"), this.mcLoc("block/snow"))));
-        this.blockItem(GELISOL);
+        this.itemModel(GELISOL);
         this.simpleBlock(GELISOL_PATH.get(), this.models().withExistingParent("gelisol_path", this.mcLoc("dirt_path")).texture("top", this.modLoc("block/gelisol_path_top")).texture("side", this.modLoc("block/gelisol_path_side")));
-        this.blockItem(GELISOL_PATH);
+        this.itemModel(GELISOL_PATH);
     }
 
+    // Items //
+
+    private void itemModel(DeferredBlock<Block> block) {
+        this.itemModels().withExistingParent(getItemName(block.get()), this.blockTexture(block.get()));
+    }
+
+    private void generatedItem(ItemLike item, TextureFolder folder) {
+        String name = getItemName(item);
+        this.itemModels().withExistingParent(name, "item/generated").texture("layer0", this.modLoc(folder.format(name)));
+    }
+
+    private void itemOnAStick(ItemLike item, TextureFolder folder) {
+        String name = getItemName(item);
+        this.itemModels().withExistingParent(name, "item/handheld_rod").texture("layer0", this.modLoc(folder.format(name)));
+    }
+
+    private void handheldItem(ItemLike item, TextureFolder folder) {
+        String name = getItemName(item);
+        this.itemModels().withExistingParent(name, "item/handheld").texture("layer0", this.modLoc(folder.format(name)));
+    }
+
+    private void generatedItemWithOverlay(ItemLike item) {
+        String name = getItemName(item);
+        this.itemModels().withExistingParent(name, "item/generated").texture("layer0", this.modLoc("item/" + name)).texture("layer1", this.modLoc("item/" + name + "_overlay"));
+    }
+
+    private void spawnEgg(DeferredItem<? extends Item> egg) {
+        this.itemModels().withExistingParent(getItemName(egg.get()), "item/template_spawn_egg");
+    }
+
+    private void painting(ResourceKey<PaintingVariant> painting) {
+        String name = painting.location().getPath();
+        this.itemModels().withExistingParent("item/painting/" + name, "item/generated").texture("layer0", this.modLoc("item/painting/" + name));
+    }
+
+    // Blocks //
+
     private void hangingPinecone(DeferredBlock<Block> pinecone) {
-        String name = pinecone.getId().getPath();
+        String name = getItemName(pinecone.get());
         ResourceLocation texture = this.blockTexture(pinecone.get());
         ModelFile model1 = this.models().withExistingParent(name + "_1", this.modLoc("block/hanging_pinecone_template_1")).texture("texture", texture);
         ModelFile model2 = this.models().withExistingParent(name + "_2", this.modLoc("block/hanging_pinecone_template_2")).texture("texture", texture);
         ModelFile model3 = this.models().withExistingParent(name + "_3", this.modLoc("block/hanging_pinecone_template_3")).texture("texture", texture);
         ModelFile model4 = this.models().withExistingParent(name + "_4", this.modLoc("block/hanging_pinecone_template_4")).texture("texture", texture);
 
-        this.generatedItem(pinecone, this.modLoc("item/" + name));
+        this.generatedItem(pinecone.get(), TextureFolder.ITEM);
         this.getVariantBuilder(pinecone.get())
                 .partialState().with(PineconeBlock.AMOUNT, 1).addModels(new ConfiguredModel(model1), new ConfiguredModel(model1, 0, 90, false), new ConfiguredModel(model1, 0, 180, false), new ConfiguredModel(model1, 0, 270, false))
                 .partialState().with(PineconeBlock.AMOUNT, 2).addModels(new ConfiguredModel(model2), new ConfiguredModel(model2, 0, 90, false), new ConfiguredModel(model2, 0, 180, false), new ConfiguredModel(model2, 0, 270, false))
@@ -502,46 +561,438 @@ public class WindsweptModelProvider extends BlueprintBlockStateProvider {
     }
 
     private void offFairyLight(DeferredBlock<Block> pinecone) {
-        String name = pinecone.getId().getPath();
+        String name = getItemName(pinecone.get());
         ResourceLocation texture = this.blockTexture(pinecone.get());
-        ResourceLocation textureOff = texture.withPath(s -> s + "_off");
+        ResourceLocation textureOff = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_off");
         ModelFile model1 = this.models().withExistingParent(name + "_1", this.modLoc("block/hanging_pinecone_template_1")).texture("texture", texture);
+        ModelFile model2 = this.models().withExistingParent(name + "_2", this.modLoc("block/hanging_pinecone_template_2")).texture("texture", texture);
+        ModelFile model3 = this.models().withExistingParent(name + "_3", this.modLoc("block/hanging_pinecone_template_3")).texture("texture", texture);
+        ModelFile model4 = this.models().withExistingParent(name + "_4", this.modLoc("block/hanging_pinecone_template_4")).texture("texture", texture);
         ModelFile modelOff1 = this.models().withExistingParent(name + "_off_1", this.modLoc("block/hanging_pinecone_template_1")).texture("texture", textureOff);
+        ModelFile modelOff2 = this.models().withExistingParent(name + "_off_2", this.modLoc("block/hanging_pinecone_template_2")).texture("texture", textureOff);
+        ModelFile modelOff3 = this.models().withExistingParent(name + "_off_3", this.modLoc("block/hanging_pinecone_template_3")).texture("texture", textureOff);
+        ModelFile modelOff4 = this.models().withExistingParent(name + "_off_4", this.modLoc("block/hanging_pinecone_template_4")).texture("texture", textureOff);
 
-        this.generatedItem(pinecone, this.modLoc("item/" + name));
+        this.generatedItem(pinecone.get(), TextureFolder.ITEM);
         this.getVariantBuilder(pinecone.get())
-                .partialState().with(PineconeBlock.AMOUNT, 1).with(BlockStateProperties.LIT, true).addModels(new ConfiguredModel(model1))
-                .partialState().with(PineconeBlock.AMOUNT, 1).with(BlockStateProperties.LIT, false).addModels(new ConfiguredModel(modelOff1));
+                .partialState().with(PineconeBlock.AMOUNT, 1).with(BlockStateProperties.LIT, true).addModels(new ConfiguredModel(model1), new ConfiguredModel(model1, 0, 90, false), new ConfiguredModel(model1, 0, 180, false), new ConfiguredModel(model1, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 2).with(BlockStateProperties.LIT, true).addModels(new ConfiguredModel(model2), new ConfiguredModel(model2, 0, 90, false), new ConfiguredModel(model2, 0, 180, false), new ConfiguredModel(model2, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 3).with(BlockStateProperties.LIT, true).addModels(new ConfiguredModel(model3), new ConfiguredModel(model3, 0, 90, false), new ConfiguredModel(model3, 0, 180, false), new ConfiguredModel(model3, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 4).with(BlockStateProperties.LIT, true).addModels(new ConfiguredModel(model4), new ConfiguredModel(model4, 0, 90, false), new ConfiguredModel(model4, 0, 180, false), new ConfiguredModel(model4, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 1).with(BlockStateProperties.LIT, false).addModels(new ConfiguredModel(modelOff1), new ConfiguredModel(modelOff1, 0, 90, false), new ConfiguredModel(modelOff1, 0, 180, false), new ConfiguredModel(modelOff1, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 2).with(BlockStateProperties.LIT, false).addModels(new ConfiguredModel(modelOff2), new ConfiguredModel(modelOff2, 0, 90, false), new ConfiguredModel(modelOff2, 0, 180, false), new ConfiguredModel(modelOff2, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 3).with(BlockStateProperties.LIT, false).addModels(new ConfiguredModel(modelOff3), new ConfiguredModel(modelOff3, 0, 90, false), new ConfiguredModel(modelOff3, 0, 180, false), new ConfiguredModel(modelOff3, 0, 270, false))
+                .partialState().with(PineconeBlock.AMOUNT, 4).with(BlockStateProperties.LIT, false).addModels(new ConfiguredModel(modelOff4), new ConfiguredModel(modelOff4, 0, 90, false), new ConfiguredModel(modelOff4, 0, 180, false), new ConfiguredModel(modelOff4, 0, 270, false));
     }
 
     private void wildBerryBush(DeferredBlock<Block> bush) {
-        String name = bush.getId().getPath();
+        String name = getBlockName(bush.get());
+        Function<Integer, ModelFile> model = i -> this.models().cross(name + "_stage" + i, this.modLoc("block/" + name + "_stage" + i)).renderType("cutout");
         this.getVariantBuilder(bush.get())
-                .partialState().with(WildBerryBushBlock.AGE, 0).addModels(new ConfiguredModel(this.models().cross(name + "_stage0", this.modLoc("block/" + name + "_stage0")).renderType("cutout")))
-                .partialState().with(WildBerryBushBlock.AGE, 1).addModels(new ConfiguredModel(this.models().cross(name + "_stage1", this.modLoc("block/" + name + "_stage1")).renderType("cutout")))
-                .partialState().with(WildBerryBushBlock.AGE, 2).addModels(new ConfiguredModel(this.models().cross(name + "_stage2", this.modLoc("block/" + name + "_stage2")).renderType("cutout")))
-                .partialState().with(WildBerryBushBlock.AGE, 3).addModels(new ConfiguredModel(this.models().cross(name + "_stage3", this.modLoc("block/" + name + "_stage3")).renderType("cutout")));
+                .partialState().with(WildBerryBushBlock.AGE, 0).addModels(new ConfiguredModel(model.apply(0), 0, 0, true))
+                .partialState().with(WildBerryBushBlock.AGE, 1).addModels(new ConfiguredModel(model.apply(1), 0, 0, true))
+                .partialState().with(WildBerryBushBlock.AGE, 2).addModels(new ConfiguredModel(model.apply(2), 0, 0, true))
+                .partialState().with(WildBerryBushBlock.AGE, 3).addModels(new ConfiguredModel(model.apply(3), 0, 0, true));
+    }
+
+    private void chain(DeferredBlock<Block> chain) {
+        ResourceLocation texture = this.blockTexture(chain.get());
+        ModelFile model = this.models().withExistingParent(getItemName(chain.get()), this.mcLoc("block/chain")).texture("all", texture).texture("particle", texture).renderType("cutout");
+
+        this.generatedItem(chain.get(), TextureFolder.ITEM);
+        this.getVariantBuilder(chain.get())
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y).modelForState().modelFile(model).addModel()
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Z).modelForState().modelFile(model).rotationX(90).addModel()
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.X).modelForState().modelFile(model).rotationX(90).rotationY(90).addModel();
+    }
+
+    private void petals(DeferredBlock<Block> petals) {
+        String name = getItemName(petals.get());
+        ResourceLocation texture = this.blockTexture(petals.get());
+        ResourceLocation stem = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_stem");
+        ModelFile model1 = this.models().withExistingParent(name + "_1", this.mcLoc("block/flowerbed_1")).texture("stem", stem).texture("flowerbed", texture).renderType("cutout");
+        ModelFile model2 = this.models().withExistingParent(name + "_2", this.mcLoc("block/flowerbed_2")).texture("stem", stem).texture("flowerbed", texture).renderType("cutout");
+        ModelFile model3 = this.models().withExistingParent(name + "_3", this.mcLoc("block/flowerbed_3")).texture("stem", stem).texture("flowerbed", texture).renderType("cutout");
+        ModelFile model4 = this.models().withExistingParent(name + "_4", this.mcLoc("block/flowerbed_4")).texture("stem", stem).texture("flowerbed", texture).renderType("cutout");
+
+        this.generatedItem(petals.get(), TextureFolder.ITEM);
     }
 
     private void dreamCatcher(DeferredBlock<Block> block) {
-        String name = block.getId().getPath();
+        String name = getItemName(block.get());
+        Function<String, ModelFile> model = s -> this.models().cross(name + "_" + s, this.modLoc("block/" + name + "_" + s)).renderType("cutout");
+
+        this.generatedItem(block.get(), TextureFolder.ITEM);
         this.getVariantBuilder(block.get())
-                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER).addModels(new ConfiguredModel(this.models().cross(name + "_top", this.modLoc("block/" + name + "_top")).renderType("cutout")))
-                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER).addModels(new ConfiguredModel(this.models().cross(name + "_bottom", this.modLoc("block/" + name + "_bottom")).renderType("cutout")));
+                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER).addModels(new ConfiguredModel(model.apply("top")))
+                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER).addModels(new ConfiguredModel(model.apply("bottom")));
     }
 
     private void wreath(DeferredBlock<Block> wreath) {
         ResourceLocation texture = this.blockTexture(wreath.get());
-        this.horizontalBlock(wreath.get(), this.models().withExistingParent(wreath.getId().getPath(), "block/ladder").texture("texture", texture).renderType("cutout"));
-        this.itemModels().withExistingParent(wreath.getId().getPath(), this.modLoc("item/wreath")).texture("layer0", texture);
+
+        this.horizontalBlock(wreath.get(), this.models().withExistingParent(getItemName(wreath.get()), "block/ladder").texture("particle", texture).renderType("cutout").texture("texture", texture));
+        this.itemModels().withExistingParent(getItemName(wreath.get()), this.modLoc("item/wreath")).texture("layer0", texture);
     }
 
-    private void petals(DeferredBlock<Block> petals) {
-        this.generatedItem(petals);
+    private void iceSheet(DeferredBlock<Block> block, ResourceLocation texture) {
+        this.paneBlockWithRenderType((IronBarsBlock) block.get(), texture, texture, "translucent");
+        this.itemModels().withExistingParent(getItemName(block.get()), "item/generated").texture("layer0", texture).renderType("translucent");
     }
 
-    private void painting(DeferredHolder<PaintingVariant, PaintingVariant> painting) {
-        String name = painting.getId().getPath();
-        this.itemModels().withExistingParent("item/painting/" + name, "item/generated").texture("layer0", this.modLoc("item/painting/" + name));
+    private void bars(DeferredBlock<Block> block) {
+        ResourceLocation texture = this.blockTexture(block.get());
+        this.paneBlockWithRenderType((IronBarsBlock) block.get(), texture, texture, "cutout");
+        this.generatedItem(block.get(), TextureFolder.BLOCK);
     }
+
+    private void suspiciousBlock(DeferredBlock<Block> block) {
+        String name = getBlockName(block.get());
+
+        this.getVariantBuilder(block.get())
+                .partialState().with(BlockStateProperties.DUSTED, 0).addModels(new ConfiguredModel(this.models().cubeAll(name + "_0", this.modLoc("block/" + name + "_0"))))
+                .partialState().with(BlockStateProperties.DUSTED, 1).addModels(new ConfiguredModel(this.models().cubeAll(name + "_1", this.modLoc("block/" + name + "_1"))))
+                .partialState().with(BlockStateProperties.DUSTED, 2).addModels(new ConfiguredModel(this.models().cubeAll(name + "_2", this.modLoc("block/" + name + "_2"))))
+                .partialState().with(BlockStateProperties.DUSTED, 3).addModels(new ConfiguredModel(this.models().cubeAll(name + "_3", this.modLoc("block/" + name + "_3"))));
+        this.itemModels().withExistingParent(name, this.modLoc("block/" + name + "_0"));
+    }
+
+    private void tallPlant(DeferredBlock<Block> flower) {
+        String name = getItemName(flower.get());
+        Function<String, ModelFile> model = s -> this.models().cross(name + "_" + s, this.modLoc("block/" + name + "_" + s)).renderType("cutout");
+
+        this.itemModels().withExistingParent(name, "item/generated").texture("layer0", this.modLoc("block/" + name + "_top"));
+        this.getVariantBuilder(flower.get())
+                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER).addModels(new ConfiguredModel(model.apply("top")))
+                .partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER).addModels(new ConfiguredModel(model.apply("bottom")));
+    }
+
+    private void pottedPlant(DeferredBlock<Block> plant, DeferredBlock<Block> pot) {
+        this.pot(pot, this.blockTexture(plant.get()));
+        this.simpleCross(plant);
+        this.generatedItem(plant.get(), TextureFolder.BLOCK);
+    }
+
+    private void pottedPlantWithPottedVariant(DeferredBlock<Block> plant, DeferredBlock<Block> pot, TextureFolder itemFolder) {
+        this.pot(pot, this.modLoc("block/potted_" + getItemName(plant.get())));
+        this.simpleCross(plant);
+        this.generatedItem(plant.get(), itemFolder);
+    }
+
+    private void pot(DeferredBlock<Block> pot, ResourceLocation texture) {
+        ModelFile model = this.models().withExistingParent(getBlockName(pot.get()), "block/flower_pot_cross").texture("plant", texture).renderType("cutout");
+        this.simpleBlock(pot.get(), model);
+    }
+
+    private void carpet(DeferredBlock<Block> carpet, ResourceLocation texture) {
+        this.simpleBlock(carpet.get(), this.models().carpet(getItemName(carpet.get()), texture));
+        this.itemModel(carpet);
+    }
+
+    private void trapdoor(DeferredBlock<Block> trapdoor) {
+        this.trapdoorBlock((TrapDoorBlock) trapdoor.get(), this.blockTexture(trapdoor.get()), true);
+        this.itemModels().withExistingParent(getItemName(trapdoor.get()), this.modLoc("block/" + getItemName(trapdoor.get()) + "_bottom"));
+    }
+
+    private void trapdoorCutout(DeferredBlock<Block> trapdoor) {
+        this.trapdoorBlockWithRenderType((TrapDoorBlock) trapdoor.get(), this.blockTexture(trapdoor.get()), true, "cutout");
+        this.itemModels().withExistingParent(getItemName(trapdoor.get()), this.modLoc("block/" + getItemName(trapdoor.get()) + "_bottom"));
+    }
+
+    private void door(DeferredBlock<Block> door) {
+        String name = getItemName(door.get());
+        this.doorBlock((DoorBlock) door.get(), name.replace("_door", ""), this.modLoc("block/" + name + "_bottom"), this.modLoc("block/" + name + "_top"));
+        this.generatedItem(door.get(), TextureFolder.ITEM);
+    }
+
+    private void doorCutout(DeferredBlock<Block> door) {
+        String name = getItemName(door.get());
+        this.doorBlockWithRenderType((DoorBlock) door.get(), name.replace("_door", ""), this.modLoc("block/" + name + "_bottom"), this.modLoc("block/" + name + "_top"), "cutout");
+        this.generatedItem(door.get(), TextureFolder.ITEM);
+    }
+
+    private void button(DeferredBlock<Block> button, ResourceLocation texture) {
+        this.buttonBlock((ButtonBlock) button.get(), texture);
+        this.itemModels().buttonInventory(getItemName(button.get()), texture);
+    }
+
+    private void pressurePlate(DeferredBlock<Block> pressurePlate, ResourceLocation texture) {
+        this.pressurePlateBlock((PressurePlateBlock) pressurePlate.get(), texture);
+        this.itemModel(pressurePlate);
+    }
+
+    private void ladder(DeferredBlock<Block> ladder) {
+        ResourceLocation texture = this.blockTexture(ladder.get());
+
+        this.horizontalBlock(ladder.get(), this.models().withExistingParent(getItemName(ladder.get()), "block/ladder").texture("particle", texture).renderType("cutout").texture("texture", texture));
+        this.generatedItem(ladder.get(), TextureFolder.BLOCK);
+    }
+
+    private void fence(DeferredBlock<Block> fence, ResourceLocation texture) {
+        this.fenceBlock((FenceBlock) fence.get(), texture);
+        this.itemModels().fenceInventory(getItemName(fence.get()), texture);
+    }
+
+    private void fenceGate(DeferredBlock<Block> gate, ResourceLocation texture) {
+        this.fenceGateBlock((FenceGateBlock) gate.get(), texture);
+        this.itemModel(gate);
+    }
+
+    private void slab(DeferredBlock<Block> slab, ResourceLocation fullModel, ResourceLocation texture) {
+        this.slabBlock((SlabBlock) slab.get(), fullModel, texture);
+        this.itemModel(slab);
+    }
+
+    private void slab(DeferredBlock<Block> slab, ResourceLocation texture) {
+        this.slabBlock((SlabBlock) slab.get(), texture, texture);
+        this.itemModel(slab);
+    }
+
+    private void slab(DeferredBlock<Block> slab, ResourceLocation fullModel, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+        this.slabBlock((SlabBlock) slab.get(), fullModel, side, bottom, top);
+        this.itemModel(slab);
+    }
+
+    private void stairs(DeferredBlock<Block> stairs, ResourceLocation texture) {
+        this.stairsBlock((StairBlock) stairs.get(), texture);
+        this.itemModel(stairs);
+    }
+
+    private void stairs(DeferredBlock<Block> stairs, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+        this.stairsBlock((StairBlock) stairs.get(), side, bottom, top);
+        this.itemModel(stairs);
+    }
+
+    private void stairsInversion(DeferredBlock<Block> block, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+        String name = getBlockName(block.get());
+        ModelFile stairs = this.models().stairs(name, side, bottom, top);
+        ModelFile stairsInner = this.models().stairsInner(name + "_inner", side, bottom, top);
+        ModelFile stairsOuter = this.models().stairsOuter(name + "_outer", side, bottom, top);
+        ModelFile stairsInverse = this.models().stairs(name + "_inverse", side, top, bottom);
+        ModelFile stairsInnerInverse = this.models().stairsInner(name + "_inner_inverse", side, top, bottom);
+        ModelFile stairsOuterInverse = this.models().stairsOuter(name + "_outer_inverse", side, top, bottom);
+
+        this.itemModel(block);
+        this.getVariantBuilder(block.get()).forAllStatesExcept(state -> {
+            Direction facing = state.getValue(StairBlock.FACING);
+            Half half = state.getValue(StairBlock.HALF);
+            StairsShape shape = state.getValue(StairBlock.SHAPE);
+            ModelFile model = half == Half.BOTTOM ? stairs : stairsInverse;
+            ModelFile inner = half == Half.BOTTOM ? stairsInner : stairsInnerInverse;
+            ModelFile outer = half == Half.BOTTOM ? stairsOuter : stairsOuterInverse;
+
+            int yRot = (int) facing.getClockWise().toYRot();
+            if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) yRot += 270;
+            if (shape != StairsShape.STRAIGHT && half == Half.TOP) yRot += 90;
+            yRot %= 360;
+
+            return ConfiguredModel.builder()
+                    .modelFile(shape == StairsShape.STRAIGHT ? model : shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT ? inner : outer)
+                    .rotationX(half == Half.BOTTOM ? 0 : 180)
+                    .rotationY(yRot)
+                    .uvLock(yRot != 0 || half == Half.TOP)
+                    .build();
+        }, StairBlock.WATERLOGGED);
+    }
+
+    private void wall(DeferredBlock<Block> wall, ResourceLocation texture) {
+        this.wallBlock((WallBlock) wall.get(), texture);
+        this.itemModels().wallInventory(getItemName(wall.get()), texture);
+    }
+
+    private void wall(DeferredBlock<Block> wall, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+        String name = getBlockName(wall.get());
+        ModelFile postModel = this.models().withExistingParent(name + "_post", this.modLoc("block/template_wall_post")).texture("side", side).texture("bottom", bottom).texture("top", top);
+        ModelFile sideModel = this.models().withExistingParent(name + "_side", this.modLoc("block/template_wall_side")).texture("side", side).texture("bottom", bottom).texture("top", top);
+        ModelFile sideTallModel = this.models().withExistingParent(name + "_side_tall", this.modLoc("block/template_wall_side_tall")).texture("side", side).texture("bottom", bottom).texture("top", top);
+
+        this.wallBlock((WallBlock) wall.get(), postModel, sideModel, sideTallModel);
+        this.itemModels().withExistingParent(name, this.modLoc("block/wall_inventory")).texture("side", side).texture("bottom", bottom).texture("top", top);
+    }
+
+    private void cubeAll(DeferredBlock<Block> block) {
+        this.simpleBlock(block.get());
+        this.itemModel(block);
+    }
+
+    private void compressedBlock(DeferredBlock<Block> block) {
+        String name = getItemName(block.get());
+        this.directionalBlock(block.get(), this.models().cubeBottomTop(name, this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_bottom"), this.modLoc("block/" + name + "_top")));
+        this.itemModel(block);
+    }
+
+    private void leaves(DeferredBlock<Block> leaves) {
+        this.simpleBlock(leaves.get(), this.models().withExistingParent(getItemName(leaves.get()), "block/leaves").texture("all", this.blockTexture(leaves.get())));
+        this.itemModel(leaves);
+    }
+
+    private void overlayLeaves(DeferredBlock<Block> leaves) {
+        ResourceLocation texture = this.blockTexture(leaves.get());
+        ResourceLocation overlay = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_overlay");
+
+        this.simpleBlock(leaves.get(), this.models().withExistingParent(getItemName(leaves.get()), "windswept:block/overlay_leaves").texture("all", texture).texture("overlay", overlay));
+        this.itemModel(leaves);
+    }
+
+    private void simpleCross(DeferredBlock<Block> block) {
+        this.simpleBlock(block.get(), this.models().cross(getItemName(block.get()), this.blockTexture(block.get())).renderType("cutout"));
+    }
+
+    private void signs(Pair<DeferredBlock<BlueprintStandingSignBlock>, DeferredBlock<BlueprintWallSignBlock>> signs, Supplier<Block> planks) {
+        this.signBlock(signs.getFirst().get(), signs.getSecond().get(), this.blockTexture(planks.get()));
+        this.generatedItem(signs.getFirst().get(), TextureFolder.ITEM);
+    }
+
+    private void beehive(DeferredBlock<Block> beehive) {
+        String name = getItemName(beehive.get());
+        ModelFile model = this.models().orientable(name, this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front"), this.modLoc("block/" + name + "_end"));
+        ModelFile model_honey = this.models().orientable(name + "_honey", this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front_honey"), this.modLoc("block/" + name + "_end"));
+
+        this.horizontalBlock(beehive.get(), s -> s.getValue(BeehiveBlock.HONEY_LEVEL) == 5 ? model_honey : model);
+        this.itemModel(beehive);
+    }
+
+    private void cabinet(DeferredBlock<Block> cabinet) {
+        String name = getItemName(cabinet.get());
+        ModelFile model = this.models().orientable(name, this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front"), this.modLoc("block/" + name + "_end"));
+        ModelFile model_open = this.models().orientable(name + "_open", this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front_open"), this.modLoc("block/" + name + "_end"));
+
+        this.horizontalBlock(cabinet.get(), s -> s.getValue(BlockStateProperties.OPEN) ? model_open : model);
+        this.itemModel(cabinet);
+    }
+
+    private void pillar(DeferredBlock<Block> pillar) {
+        this.axisBlock((RotatedPillarBlock) pillar.get(), this.blockTexture(pillar.get()), this.modLoc("block/" + getItemName(pillar.get()) + "_top"));
+        this.itemModel(pillar);
+    }
+
+    private void wood(DeferredBlock<Block> log, ResourceLocation texture) {
+        this.axisBlock((RotatedPillarBlock) log.get(), texture, texture);
+        this.itemModel(log);
+    }
+
+    private void bookshelf(DeferredBlock<Block> bookshelf, Supplier<Block> planks) {
+        this.simpleBlock(bookshelf.get(), this.models().cubeColumn(getItemName(bookshelf.get()), this.blockTexture(bookshelf.get()), this.blockTexture(planks.get())));
+        this.itemModel(bookshelf);
+    }
+
+    // Blueprint Models //
+
+    private void chests(DeferredBlock<BlueprintChestBlock> chest, DeferredBlock<BlueprintTrappedChestBlock> trapped, ResourceLocation texture) {
+        ModelFile model = this.models().getBuilder(getItemName(chest.get())).texture("particle", texture);
+        this.simpleBlock(chest.get(), model);
+        this.simpleBlock(trapped.get(), model);
+        this.itemModels().withExistingParent(getItemName(chest.get()), "blueprint:item/template_chest");
+        this.itemModels().withExistingParent(getItemName(trapped.get()), "blueprint:item/template_chest");
+    }
+
+    private void leafPile(DeferredBlock<Block> leafPile, ResourceLocation texture, boolean tinted) {
+        ModelFile model = this.models().withExistingParent(getItemName(leafPile.get()), "blueprint:block/" + (tinted ? "tinted_" : "") + "leaf_pile").texture("all", texture).renderType("cutout");
+
+        this.itemModels().withExistingParent(getItemName(leafPile.get()), "item/generated").texture("layer0", texture);
+        this.getMultipartBuilder(leafPile.get())
+                .part().modelFile(model).uvLock(true).rotationX(270).addModel().condition(BlockStateProperties.UP, true).end()
+                .part().modelFile(model).uvLock(true).rotationX(90).addModel().condition(BlockStateProperties.DOWN, true).end()
+                .part().modelFile(model).addModel().condition(BlockStateProperties.NORTH, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(180).addModel().condition(BlockStateProperties.SOUTH, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(90).addModel().condition(BlockStateProperties.EAST, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(270).addModel().condition(BlockStateProperties.WEST, true).end();
+    }
+
+    private void overlayLeafPile(DeferredBlock<Block> leafPile, ResourceLocation texture) {
+        ResourceLocation overlay = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_overlay");
+        ModelFile model = this.models().withExistingParent(getItemName(leafPile.get()), "windswept:block/overlay_leaf_pile").texture("all", texture).texture("overlay", overlay);
+
+        this.itemModels().withExistingParent(getItemName(leafPile.get()), "item/generated").texture("layer0", texture).texture("layer1", overlay);
+        this.getMultipartBuilder(leafPile.get())
+                .part().modelFile(model).uvLock(true).rotationX(270).addModel().condition(BlockStateProperties.UP, true).end()
+                .part().modelFile(model).uvLock(true).rotationX(90).addModel().condition(BlockStateProperties.DOWN, true).end()
+                .part().modelFile(model).addModel().condition(BlockStateProperties.NORTH, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(180).addModel().condition(BlockStateProperties.SOUTH, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(90).addModel().condition(BlockStateProperties.EAST, true).end()
+                .part().modelFile(model).uvLock(true).rotationY(270).addModel().condition(BlockStateProperties.WEST, true).end();
+    }
+
+    private void boards(DeferredBlock<Block> boards) {
+        ResourceLocation texture = this.blockTexture(boards.get());
+        ModelFile boardsModel = this.models().getBuilder(getItemName(boards.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.tryBuild(Blueprint.MOD_ID, "block/template_boards"))).texture("all", texture);
+        ModelFile boardsHorizontalModel = this.models().getBuilder(getItemName(boards.get()) + "_horizontal").parent(new ModelFile.UncheckedModelFile(ResourceLocation.tryBuild(Blueprint.MOD_ID, "block/template_boards_horizontal"))).texture("all", texture);
+
+        this.itemModel(boards);
+        this.getVariantBuilder(boards.get())
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y).modelForState().modelFile(boardsModel).addModel()
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Z).modelForState().modelFile(boardsHorizontalModel).addModel()
+                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.X).modelForState().modelFile(boardsHorizontalModel).rotationY(270).addModel();
+    }
+
+    private void thatch(DeferredBlock<Block> thatch) {
+        String name = getItemName(thatch.get());
+        ResourceLocation texture = this.blockTexture(thatch.get());
+        ResourceLocation extrudes = this.modLoc("block/" + name + "_extrudes");
+
+        this.simpleBlock(thatch.get(), this.models().withExistingParent(name, "blueprint:block/template_thatch").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout"));
+        this.itemModel(thatch);
+    }
+
+    private void thatchSlab(DeferredBlock<Block> thatch, ResourceLocation texture) {
+        String name = getItemName(thatch.get());
+        ResourceLocation extrudes = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_extrudes");
+
+        ModelFile bottom = this.models().withExistingParent(name, "blueprint:block/template_thatch_slab").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile top = this.models().withExistingParent(name + "_top", "blueprint:block/template_thatch_slab_top").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+
+        this.slabBlock((SlabBlock) thatch.get(), bottom, top, this.models().getExistingFile(texture));
+        this.itemModel(thatch);
+    }
+
+    private void thatchStairs(DeferredBlock<Block> thatch, ResourceLocation texture) {
+        String name = getItemName(thatch.get());
+        ResourceLocation extrudes = ResourceLocation.tryBuild(texture.getNamespace(), texture.getPath() + "_extrudes");
+
+        ModelFile stairs = this.models().withExistingParent(name, "blueprint:block/template_thatch_stairs").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile inner = this.models().withExistingParent(name + "_inner", "blueprint:block/template_thatch_stairs_inner").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile outer = this.models().withExistingParent(name + "_outer", "blueprint:block/template_thatch_stairs_outer").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile inner_top = this.models().withExistingParent(name + "_inner_top", "blueprint:block/template_thatch_stairs_inner_top").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile outer_top = this.models().withExistingParent(name + "_outer_top", "blueprint:block/template_thatch_stairs_outer_top").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+        ModelFile top = this.models().withExistingParent(name + "_top", "blueprint:block/template_thatch_stairs_top").texture("thatch", texture).texture("extrudes", extrudes).renderType("cutout");
+
+        this.itemModel(thatch);
+        this.getVariantBuilder(thatch.get())
+                .forAllStatesExcept(state -> {
+                    Direction facing = state.getValue(StairBlock.FACING);
+                    Half half = state.getValue(StairBlock.HALF);
+                    StairsShape shape = state.getValue(StairBlock.SHAPE);
+                    int yRot = (int) facing.getClockWise().toYRot();
+
+                    if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) yRot += 270;
+                    if (half == Half.TOP && shape == StairsShape.STRAIGHT) yRot += 180;
+                    if (half == Half.TOP && (shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT))
+                        yRot += 90;
+
+                    yRot %= 360;
+
+                    return ConfiguredModel.builder().modelFile(shape == StairsShape.STRAIGHT ? (half == Half.BOTTOM ? stairs : top)
+                            : shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT ? (half == Half.BOTTOM ? inner : inner_top)
+                            : (half == Half.BOTTOM ? outer : outer_top)).rotationY(yRot).uvLock(true).build();
+                }, StairBlock.WATERLOGGED);
+    }
+
+    // Util //
+
+    private static String getItemName(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
+    }
+
+    private static String getBlockName(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).getPath();
+    }
+
+    private enum TextureFolder {
+        ITEM, BLOCK;
+
+        public String format(String itemName) {
+            return this.name().toLowerCase() + '/' + itemName;
+        }
+    }
+
 }
